@@ -7,13 +7,6 @@ With hands-on experience deploying and analyzing smart traffic devices, I have s
 Below you will find pictures of dashboards I have created in Power BI. I was responsible for extracting, transforming, and loading data into these dashboards.
 
 ## Here is some of my work:
-### Frisco Dashboard
-![Alt text](https://ryu-li98.github.io/assets/Projects/Frisco/Frisco_Homepage.png)
-
-![Alt text](https://ryu-li98.github.io/assets/Projects/Frisco/Frisco_Safety.png)
-
-![Alt text](https://ryu-li98.github.io/assets/Projects/Frisco/Frisco_Mobility.png)
-
 ### Hillsborough Dashboard
 ![Alt text](https://ryu-li98.github.io/assets/Projects/Hillsborough/Hillsborough_Homepage.png)
 
@@ -30,6 +23,13 @@ Below you will find pictures of dashboards I have created in Power BI. I was res
 ![Alt text](https://ryu-li98.github.io/assets/Projects/Hillsborough/Hillsborough_Preemptions.png)
 
 ![Alt text](https://ryu-li98.github.io/assets/Projects/Hillsborough/Hillsborough_Systemwide_Summary.png)
+
+### Frisco Dashboard
+![Alt text](https://ryu-li98.github.io/assets/Projects/Frisco/Frisco_Homepage.png)
+
+![Alt text](https://ryu-li98.github.io/assets/Projects/Frisco/Frisco_Safety.png)
+
+![Alt text](https://ryu-li98.github.io/assets/Projects/Frisco/Frisco_Mobility.png)
 
 ### Sunrise Dashboard
 ![Alt text](https://ryu-li98.github.io/assets/Projects/Sunrise/Sunrise_Homepage.png)
