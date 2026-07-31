@@ -8,7 +8,7 @@ Below you will find pictures of dashboards I have created in Power BI. I was res
 
 ## Here is some of my work:
 ### Port Everglades Summary Dashboard
-![Alt text](https://ryu-li98.github.io/assets/Projects/Port Everglades/Port Everglades page 1.png)
+![Alt text](https://ryu-li98.github.io/assets/Projects/Port_Everglades/Port_Everglades_page_1.png)
 
 ### Hillsborough Dashboard
 ![Alt text](https://ryu-li98.github.io/assets/Projects/Hillsborough/Hillsborough_Homepage.png)
