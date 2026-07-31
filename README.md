@@ -50,17 +50,4 @@ Below you will find pictures of dashboards I have created in Power BI. I was res
 
 ![Alt text](https://ryu-li98.github.io/assets/Projects/Sunrise/Sunrise_Timeline.png)
 
-### Beeline Hwy Dashboard
-![Alt text](https://ryu-li98.github.io/assets/Projects/Beeline/Beeline_Homepage.png)
-
-![Alt text](https://ryu-li98.github.io/assets/Projects/Beeline/Beeline_Safety.png)
-
-![Alt text](https://ryu-li98.github.io/assets/Projects/Beeline/Beeline_Mobility.png)
-
-![Alt text](https://ryu-li98.github.io/assets/Projects/Beeline/Beeline_Drive_Test.png)
-
-![Alt text](https://ryu-li98.github.io/assets/Projects/Beeline/Beeline_Drive_Test_1.png)
-
-![Alt text](https://ryu-li98.github.io/assets/Projects/Beeline/Beeline_Drive_Test_Comparison.png)
-
 ![Alt text](https://ryu-li98.github.io/assets/Projects/Beeline/Beeline_TMC.png)
