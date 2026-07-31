@@ -7,6 +7,9 @@ With hands-on experience deploying and analyzing smart traffic devices, I have s
 Below you will find pictures of dashboards I have created in Power BI. I was responsible for extracting, transforming, and loading data into these dashboards.
 
 ## Here is some of my work:
+### Port Everglades Summary Dashboard
+![Alt text](https://ryu-li98.github.io/assets/Projects/Port Everglades/Port Everglades page 1.png)
+
 ### Hillsborough Dashboard
 ![Alt text](https://ryu-li98.github.io/assets/Projects/Hillsborough/Hillsborough_Homepage.png)
 
