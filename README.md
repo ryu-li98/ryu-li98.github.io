@@ -10,6 +10,11 @@ Below you will find pictures of dashboards I have created in Power BI. I was res
 ### Port Everglades Summary Dashboard
 ![Alt text](https://ryu-li98.github.io/assets/Projects/PortEverglades/PortEvergladespage1.png)
 
+![Alt text](https://ryu-li98.github.io/assets/Projects/PortEverglades/PortEvergladespage2.png)
+
+###Event Summary Page
+![Alt text](https://ryu-li98.github.io/assets/Projects/Corporate/EventRequestForm.png)
+
 ### Hillsborough Dashboard
 ![Alt text](https://ryu-li98.github.io/assets/Projects/Hillsborough/Hillsborough_Homepage.png)
 
