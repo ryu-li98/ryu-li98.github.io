@@ -20,16 +20,20 @@ body{
 }
 
 .hero{
-
-    padding:70px 0;
-    background:white;
-
+    min-height:70vh;
+    padding:40px 0;
 }
+
+.hero p{
+
+    max-width:700px;
+
+}    
 
 .profile{
 
-    width:160px;
-    height:160px;
+    width:180px;
+    height:180px;
     object-fit:cover;
     border-radius:50%;
     border:6px solid #e9ecef;
@@ -100,21 +104,21 @@ footer{
 
 </nav>
 
-<section class="hero">
+<section class="hero d-flex align-items-center">
 
 <div class="container">
 
 <div class="row align-items-center">
 
-<div class="col-lg-4 text-center">
+<div class="col-lg-3 text-center">
 
 <img src="assets/images/profile_pic.jpg" class="profile">
 
 </div>
 
-<div class="col-lg-8">
+<div class="col-lg-6">
 
-<h1 class="display-5 fw-bold">Ryu Li</h1>
+<h1 class="display-6 fw-bold">Ryu Li</h1>
 
 <h3 class="text-primary mb-4">
 
@@ -122,10 +126,9 @@ Transportation Data Analyst
 
 </h3>
 
-<p class="fs-5 text-secondary">
+<p class="fs-6 text-secondary">
 
-I combine civil engineering expertise with modern data analytics to solve complex transportation challenges. I specialize in building end-to-end data pipelines, analyzing large-scale traffic datasets using SQL and Python, and developing interactive Power BI dashboards that support agencies in improving mobility, monitoring Smart Work Zones, and making data-driven operational decisions.
-
+I combine civil engineering expertise with modern data analytics to solve transportation challenges. I build data pipelines, analyze traffic datasets, and develop Power BI dashboards that help agencies improve mobility, monitor Smart Work Zones, and make data-driven decisions.
 </p>
 
 <a class="btn btn-primary me-2" href="#projects">
