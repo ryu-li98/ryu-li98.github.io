@@ -1,10 +1,8 @@
-# Civil Engineer & Transportation Data Analyst
+# Civil Engineer & Transportation Data Analyst | Power BI • Python • SQL • Azure
 
-I am a skilled Civil Engineer and Data Analyst with a strong background in transportation data analysis and engineering. Proficient in tools like Power BI and Azure, I specialize in creating data-driven dashboards, improving traffic flow, and ensuring compliance with DOT standards. 
+I combine civil engineering expertise with modern data analytics to solve complex transportation challenges. I specialize in building end-to-end data pipelines, analyzing large-scale traffic datasets using SQL and Python, and developing interactive Power BI dashboards that support agencies in improving mobility, monitoring Smart Work Zones, and making data-driven operational decisions.
 
-With hands-on experience deploying and analyzing smart traffic devices, I have successfully optimized traffic management strategies and enhanced safety measures. My approach to data organization and analysis ensures high-quality outcomes in every project. Additionally, I bring a diverse skill set in AutoCAD, programming, and project management, along with fluency in both English and Spanish.
-
-Below you will find pictures of dashboards I have created in Power BI. I was responsible for extracting, transforming, and loading data into these dashboards.
+Below you will find pictures of dashboards I have created in Power BI.
 
 ## Here is some of my work:
 ### Port Everglades Summary Dashboard
