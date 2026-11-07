@@ -245,6 +245,7 @@ h1,h2,h3{ margin:0; font-family:var(--display); font-weight:600; text-wrap:balan
 /* ================= Hero ================= */
 
 .hero{ padding:20px 0 0; }
+@media (max-width:760px){ .hero{ padding-top:8px; } }
 
 .hero-tile{
     display:grid;
@@ -826,7 +827,8 @@ h1,h2,h3{ margin:0; font-family:var(--display); font-weight:600; text-wrap:balan
 
 @media (max-width:760px){
     .head .wrap{ grid-template-columns:1fr auto; }
-    .nav{ display:none; }
+    .head nav{ display:none; }
+    .head .wrap{ height:56px; }
     .menu-btn{ display:inline-flex; }
 
     .sec-head{ flex-direction:column; align-items:flex-start; }
