@@ -4,296 +4,845 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Ryu Li — Civil Engineer &amp; Transportation Data Analyst</title>
 
-<link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
-    rel="stylesheet"
->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
 
+/* ================= Tokens ================= */
+
 :root{
-    --primary-color:#0d6efd;
-    --dark-color:#212529;
-    --light-background:#f8f9fa;
-    --border-color:#e9ecef;
+    --bg:#f5f5f7;
+    --panel:#ffffff;
+    --field:#ececf0;
+    --line:#d2d2d7;
+    --hair:rgba(0,0,0,.08);
+    --grid:#e8e8ed;
+    --fg:#1d1d1f;
+    --muted:#6e6e73;
+    --faint:#a1a1a6;
+    --ink:#1d1d1f;          /* dark surfaces */
+    --accent:#1d1d1f; --accent-ink:#fff;
+    --sans:-apple-system, BlinkMacSystemFont, "SF Pro Text", "Geist", system-ui, "Segoe UI", sans-serif;
+    --display:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Geist", system-ui, "Segoe UI", sans-serif;
+    --r-xl:32px;
+    --r-tile:24px;
+    --r-img:16px;
+    --headh:60px;
+    --ease:cubic-bezier(.2,.8,.2,1);
+    --gap:14px;
+    color-scheme:light;
 }
+
+*,*::before,*::after{ box-sizing:border-box; }
 
 html{
-    scroll-padding-top:75px;
+    scroll-padding-top:calc(var(--headh) + 14px);
+    -webkit-text-size-adjust:100%;
 }
+@media (prefers-reduced-motion:no-preference){ html{ scroll-behavior:smooth; } }
 
 body{
-    background:var(--light-background);
-    color:var(--dark-color);
-    scroll-behavior:smooth;
+    margin:0;
+    background:var(--bg);
+    color:var(--fg);
+    font-family:var(--sans);
+    font-size:15px;
+    line-height:1.5;
+    letter-spacing:-0.011em;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
 }
 
-/* Navigation */
+img{ display:block; max-width:100%; }
+a{ color:inherit; }
+p{ margin:0; }
+ul{ margin:0; padding:0; list-style:none; }
+h1,h2,h3{ margin:0; font-family:var(--display); font-weight:600; text-wrap:balance; }
 
-.navbar{
-    min-height:70px;
+:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; border-radius:6px; }
+
+.wrap{
+    max-width:1200px;
+    margin:0 auto;
+    padding-left:max(24px, env(safe-area-inset-left));
+    padding-right:max(24px, env(safe-area-inset-right));
 }
 
-.navbar-brand{
-    font-size:1.35rem;
+/* ================= Pills ================= */
+
+.btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    height:40px;
+    padding:0 18px;
+    border:0;
+    border-radius:980px;
+    background:var(--panel);
+    color:var(--fg);
+    font:500 14px/1 var(--sans);
+    letter-spacing:-0.01em;
+    text-decoration:none;
+    cursor:pointer;
+    box-shadow:inset 0 0 0 1px var(--hair);
+    transition:background-color .15s, color .15s, box-shadow .15s;
+    -webkit-tap-highlight-color:transparent;
 }
+.btn:hover{ background:var(--field); }
+.btn:active{ transform:scale(.97); }
 
-.nav-link{
-    font-weight:500;
-    margin-left:12px;
-}
+.btn.primary{ background:var(--accent); color:var(--accent-ink); box-shadow:none; }
+.btn.primary:hover{ background:#000; }
 
-.nav-link:hover{
-    color:var(--primary-color);
-}
+.btn.sm{ height:34px; padding:0 14px; font-size:13.5px; }
 
-/* Hero */
-
-.hero{
-    padding:65px 0 55px;
-}
-
-.hero-content{
-    max-width:750px;
-}
-
-.hero p{
-    max-width:720px;
-    margin-bottom:24px;
-    line-height:1.75;
-}
-
-.profile{
-    width:190px;
-    height:190px;
-    object-fit:cover;
+.btn .arr{
+    display:inline-grid;
+    place-items:center;
+    width:20px; height:20px;
+    margin-right:-8px;
     border-radius:50%;
-    border:6px solid var(--border-color);
-    box-shadow:0 8px 24px rgba(0,0,0,.08);
+    background:var(--field);
+    font-size:11px;
+    transition:transform .2s var(--ease), background-color .15s;
+}
+.btn.primary .arr{ background:rgba(255,255,255,.16); }
+.btn:hover .arr{ transform:translateX(2px); }
+
+/* ================= Header ================= */
+
+.head{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:rgba(245,245,247,.72);
+    -webkit-backdrop-filter:saturate(180%) blur(28px);
+    backdrop-filter:saturate(180%) blur(28px);
+}
+.head::after{
+    content:"";
+    position:absolute;
+    inset:100% 0 auto;
+    height:1px;
+    background:var(--hair);
+    opacity:0;
+    transition:opacity .2s;
+}
+.head.scrolled::after{ opacity:1; }
+
+.head .wrap{
+    height:var(--headh);
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    gap:16px;
+}
+
+.brand{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    font-family:var(--display);
+    font-weight:600;
+    font-size:16px;
+    letter-spacing:-0.02em;
+    text-decoration:none;
+    justify-self:start;
+}
+.mono{
+    display:grid;
+    place-items:center;
+    width:30px; height:30px;
+    border-radius:50%;
+    background:var(--ink);
+    color:#fff;
+    font-size:11.5px;
+    letter-spacing:.02em;
+}
+
+/* segmented nav */
+.nav{
+    position:relative;
+    display:flex;
+    padding:3px;
+    border-radius:980px;
+    background:rgba(0,0,0,.05);
+}
+.nav a{
+    position:relative;
+    z-index:1;
+    display:block;
+    padding:6px 15px;
+    border-radius:980px;
+    font-size:13.5px;
+    font-weight:500;
+    color:var(--muted);
+    text-decoration:none;
+    transition:color .15s, background-color .15s, box-shadow .15s;
+}
+.nav a:hover{ color:var(--fg); background:var(--panel); box-shadow:0 1px 3px rgba(0,0,0,.08); }
+.head-end{
+    justify-self:end;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+/* mobile menu */
+.menu-btn{
+    display:none;
+    width:38px; height:38px;
+    padding:0;
+    justify-content:center;
+}
+.menu-btn span,
+.menu-btn span::before,
+.menu-btn span::after{
+    content:"";
+    display:block;
+    width:15px; height:1.5px;
+    border-radius:2px;
+    background:var(--fg);
+    position:relative;
+    transition:transform .2s var(--ease), background-color .15s;
+}
+.menu-btn span::before{ position:absolute; top:-5px; }
+.menu-btn span::after{ position:absolute; top:5px; }
+.menu-btn[aria-expanded="true"] span{ background:transparent; }
+.menu-btn[aria-expanded="true"] span::before{ transform:translateY(5px) rotate(45deg); }
+.menu-btn[aria-expanded="true"] span::after{ transform:translateY(-5px) rotate(-45deg); }
+
+.pop{
+    position:fixed;
+    z-index:60;
+    min-width:210px;
+    padding:6px;
+    border-radius:18px;
+    background:rgba(255,255,255,.86);
+    -webkit-backdrop-filter:saturate(180%) blur(28px);
+    backdrop-filter:saturate(180%) blur(28px);
+    box-shadow:0 22px 60px rgba(0,0,0,.16), inset 0 0 0 1px var(--hair);
+    transform-origin:top right;
+}
+.pop[hidden]{ display:none; }
+.pop a{
+    display:flex;
+    justify-content:space-between;
+    padding:10px 14px;
+    border-radius:10px;
+    font-size:15px;
+    text-decoration:none;
+}
+.pop a::after{ content:"→"; color:var(--faint); font-size:13px; }
+.pop a:hover, .pop a:focus-visible{ background:rgba(0,0,0,.06); outline:none; }
+
+/* ================= Hero ================= */
+
+.hero{ padding:20px 0 0; }
+
+.hero-tile{
+    display:grid;
+    grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);
+    background:var(--panel);
+    border-radius:var(--r-xl);
+    overflow:hidden;
+}
+
+.hero-text{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:clamp(28px, 4.5vw, 56px);
+}
+
+.chip{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    align-self:flex-start;
+    height:28px;
+    padding:0 12px 0 10px;
+    border-radius:980px;
+    background:var(--bg);
+    font-size:12.5px;
+    font-weight:500;
+    color:var(--muted);
+    letter-spacing:.005em;
+}
+.chip i{
+    width:7px; height:7px;
+    border-radius:50%;
+    background:#30d158;
+    box-shadow:0 0 0 3px rgba(48,209,88,.18);
 }
 
 .hero-title{
-    font-size:3rem;
+    margin-top:18px;
+    font-size:clamp(46px, 7vw, 84px);
+    line-height:.98;
+    letter-spacing:-0.045em;
 }
 
 .hero-subtitle{
-    color:var(--primary-color);
+    margin-top:12px;
+    font-size:clamp(20px, 2.2vw, 28px);
+    line-height:1.15;
+    letter-spacing:-0.025em;
+    color:var(--fg);
+}
+.hero-subtitle .hs{ color:var(--faint); }
+
+.lede{
+    margin-top:18px;
+    max-width:60ch;
+    color:var(--muted);
+    font-size:16px;
+    line-height:1.6;
 }
 
-/* General sections */
-
-.section{
-    padding:65px 0;
-}
-
-.section-title{
-    font-weight:700;
-    margin-bottom:15px;
-}
-
-.section-description{
-    color:#6c757d;
-    max-width:750px;
-    line-height:1.75;
-}
-
-#about{
-    padding-top:45px;
-}
-
-/* About */
-
-.about-card{
-    background:white;
-    border:1px solid var(--border-color);
-    border-radius:16px;
-    padding:32px;
-    box-shadow:0 6px 20px rgba(0,0,0,.04);
-}
-
-.about-card p{
-    color:#6c757d;
-    line-height:1.8;
-    margin-bottom:16px;
-}
-
-.about-card p:last-child{
-    margin-bottom:0;
-}
-
-/* Projects */
-
-.project-card{
-    border:1px solid var(--border-color);
-    border-radius:16px;
-    overflow:hidden;
-    transition:transform .25s ease, box-shadow .25s ease;
-}
-
-.project-card:hover{
-    transform:translateY(-8px);
-    box-shadow:0 14px 30px rgba(0,0,0,.10);
-}
-
-.project-image{
-    width:100%;
-    height:245px;
-    object-fit:cover;
-    object-position:top;
-    border-bottom:1px solid var(--border-color);
-}
-
-.project-card .card-body{
-    padding:25px;
-}
-
-.project-card h4{
-    font-size:1.3rem;
-    font-weight:700;
-    margin-bottom:12px;
-}
-
-.project-card p{
-    color:#6c757d;
-    line-height:1.7;
-}
-
-.project-tags{
+.hero-actions{
     display:flex;
     flex-wrap:wrap;
-    gap:8px;
-    margin-bottom:20px;
+    gap:10px;
+    margin-top:26px;
 }
 
-.project-tag{
-    background:#e7f1ff;
-    color:#0a58ca;
-    border-radius:50px;
-    padding:6px 12px;
-    font-size:.8rem;
-    font-weight:600;
-}
-
-/* Skills */
-
-.skills-grid{
+.focus{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:6px;
     margin-top:30px;
+    padding-top:20px;
+    border-top:1px solid var(--hair);
+}
+.focus-label{
+    font-size:11.5px;
+    font-weight:600;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--faint);
+    margin-right:6px;
+}
+.focus li{
+    font-size:13px;
+    padding:4px 11px;
+    border-radius:980px;
+    background:var(--bg);
+    color:var(--fg);
 }
 
-.skill-category{
-    background:white;
-    border:1px solid var(--border-color);
-    border-radius:14px;
-    padding:25px;
+.hero-photo{
+    position:relative;
+    margin:12px;
+    border-radius:calc(var(--r-xl) - 12px);
+    overflow:hidden;
+    background:linear-gradient(160deg, #e8e8ed, #d2d2d7);
+    min-height:420px;
+}
+.hero-photo img{
+    position:absolute;
+    inset:0;
+    width:100%;
     height:100%;
-    box-shadow:0 5px 16px rgba(0,0,0,.04);
+    object-fit:cover;
+    object-position:center 25%;
+}
+.photo-tag{
+    position:absolute;
+    left:14px; bottom:14px; right:14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 14px;
+    border-radius:16px;
+    background:rgba(255,255,255,.78);
+    -webkit-backdrop-filter:saturate(180%) blur(24px);
+    backdrop-filter:saturate(180%) blur(24px);
+    box-shadow:0 8px 30px rgba(0,0,0,.12), inset 0 0 0 1px rgba(255,255,255,.5);
+}
+.photo-tag strong{ font-size:13.5px; font-weight:600; letter-spacing:-0.01em; display:block; }
+.photo-tag small{ font-size:12px; color:var(--muted); display:block; }
+.photo-tag .mono{ width:34px; height:34px; flex:none; }
+
+/* ================= Sections ================= */
+
+.section{ padding:28px 0 0; }
+
+.sec-head{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:12px 40px;
+    margin-bottom:10px;
+}
+.kicker{
+    display:block;
+    margin-bottom:8px;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--faint);
+    font-variant-numeric:tabular-nums;
+}
+.sec-title{
+    font-size:clamp(28px, 3.2vw, 42px);
+    line-height:1.06;
+    letter-spacing:-0.035em;
+}
+.sec-title .hs{ color:var(--faint); }
+@media (min-width:761px){ .sec-title{ white-space:nowrap; } }
+
+.sec-desc{
+    max-width:440px;
+    color:var(--muted);
+    font-size:14.5px;
+    text-align:right;
 }
 
-.skill-category h4{
-    font-size:1.1rem;
-    font-weight:700;
-    margin-bottom:18px;
-}
+/* ================= About (bento) ================= */
 
-.skill-list{
+.bento{
+    display:grid;
+    grid-template-columns:repeat(12, minmax(0,1fr));
+    gap:var(--gap);
+}
+.tile{
+    background:var(--panel);
+    border-radius:var(--r-tile);
+    padding:28px 30px;
+}
+.tile h3{
+    font-size:19px;
+    letter-spacing:-0.022em;
+    margin-bottom:10px;
+}
+.tile p{ color:var(--muted); line-height:1.6; }
+
+.b-bg   { grid-column:span 7; }
+.b-goal { grid-column:span 5; background:var(--ink); color:#f5f5f7; display:flex; flex-direction:column; }
+.b-goal p{ color:#a1a1a6; }
+.b-goal h3{ color:#f5f5f7; }
+.b-goal .quote{
+    margin-top:auto;
+    padding-top:22px;
+    font-family:var(--display);
+    font-size:22px;
+    font-weight:600;
+    line-height:1.2;
+    letter-spacing:-0.025em;
+    color:#f5f5f7;
+}
+.b-goal .quote span{ color:#6e6e73; }
+.b-do   { grid-column:span 12; display:grid; grid-template-columns:200px minmax(0,1fr); gap:12px 28px; align-items:start; }
+.b-do h3{ margin:0; font-size:clamp(22px, 2.2vw, 28px); letter-spacing:-0.03em; }
+
+.edu-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:8px 24px;
+    flex-wrap:wrap;
+}
+.edu-school{
+    font-family:var(--display);
+    font-size:19px;
+    font-weight:600;
+    letter-spacing:-0.022em;
+    color:var(--fg) !important;
+    line-height:1.25 !important;
+}
+.edu-degree{ margin-top:2px; }
+.edu-meta{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    font-size:13.5px;
+    color:var(--muted);
+    font-variant-numeric:tabular-nums;
+    line-height:1.5;
+}
+.edu-meta span:first-child{ color:var(--fg); font-weight:500; }
+.edu-tags{
     display:flex;
     flex-wrap:wrap;
-    gap:9px;
+    gap:6px;
+    margin-top:16px;
 }
-
-.skill-item{
-    background:#f1f3f5;
-    border-radius:8px;
-    padding:7px 11px;
-    color:#495057;
-    font-size:.9rem;
+.edu-tags li{
+    padding:5px 12px;
+    border-radius:980px;
+    background:var(--bg);
+    font-size:13px;
+}
+.edu-tags li.award{
+    background:var(--ink);
+    color:#fff;
     font-weight:500;
 }
-
-/* Footer */
-
-footer{
-    background:var(--dark-color);
-    color:white;
-    padding:55px 0;
+@media (max-width:560px){
+    .edu-meta{ align-items:flex-start; }
 }
 
-footer p{
-    color:#adb5bd;
+.tile .ico{
+    display:grid;
+    place-items:center;
+    width:38px; height:38px;
+    border-radius:12px;
+    background:var(--bg);
+    margin-bottom:18px;
 }
+.b-goal .ico{ background:rgba(255,255,255,.1); }
+.ico svg{ width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+
+/* ================= Projects ================= */
+
+.projects{
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0,1fr));
+    gap:20px;
+}
+
+.project-card{
+    display:flex;
+    flex-direction:column;
+    background:var(--panel);
+    border-radius:var(--r-tile);
+    padding:12px;
+    transition:box-shadow .3s var(--ease);
+}
+.project-card:hover{ box-shadow:0 20px 50px rgba(0,0,0,.07); }
+
+/* soft stage the browser window sits on */
+.stage{
+    position:relative;
+    border-radius:16px;
+    padding:clamp(22px, 4.5%, 36px) clamp(22px, 7%, 52px);
+    background:
+        radial-gradient(circle at 1px 1px, rgba(0,0,0,.07) 1px, transparent 1.4px) 0 0 / 18px 18px,
+        linear-gradient(160deg, #f4f4f6, #e9e9ee);
+    overflow:hidden;
+}
+
+.idx{
+    position:absolute;
+    top:12px; left:12px;
+    z-index:2;
+    height:24px;
+    padding:0 9px;
+    display:inline-flex;
+    align-items:center;
+    border-radius:980px;
+    background:rgba(255,255,255,.85);
+    -webkit-backdrop-filter:blur(16px);
+    backdrop-filter:blur(16px);
+    font-size:11.5px;
+    font-weight:600;
+    letter-spacing:.02em;
+    font-variant-numeric:tabular-nums;
+    box-shadow:inset 0 0 0 1px var(--hair);
+}
+
+/* browser window */
+.window{
+    position:relative;
+    border-radius:10px;
+    background:#fff;
+    overflow:hidden;
+    box-shadow:0 1px 2px rgba(0,0,0,.06), 0 14px 34px rgba(0,0,0,.12), 0 0 0 1px rgba(0,0,0,.06);
+    transition:transform .4s var(--ease), box-shadow .4s var(--ease);
+}
+.project-card:hover .window{
+    transform:translateY(-4px);
+    box-shadow:0 1px 2px rgba(0,0,0,.06), 0 22px 44px rgba(0,0,0,.16), 0 0 0 1px rgba(0,0,0,.06);
+}
+.bar{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    height:22px;
+    padding:0 9px;
+    background:#f5f5f7;
+    border-bottom:1px solid rgba(0,0,0,.06);
+}
+.bar i{
+    width:7px; height:7px;
+    border-radius:50%;
+    background:#d2d2d7;
+}
+.bar b{
+    flex:0 1 46%;
+    height:11px;
+    margin:0 auto;
+    border-radius:980px;
+    background:#e8e8ed;
+}
+.project-image{
+    display:block;
+    width:100%;
+    aspect-ratio:2.2 / 1;
+    object-fit:contain;
+    background:#fff;
+}
+
+/* pipeline visual inside the window */
+.flow{
+    aspect-ratio:2.2 / 1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    padding:12px;
+    background:
+        radial-gradient(circle at 1px 1px, #dcdce1 1px, transparent 1.4px) 0 0 / 14px 14px,
+        #fbfbfd;
+}
+.flow span{
+    padding:6px 11px;
+    border-radius:980px;
+    background:var(--panel);
+    font-size:12px;
+    font-weight:500;
+    white-space:nowrap;
+    box-shadow:0 2px 8px rgba(0,0,0,.06), inset 0 0 0 1px var(--hair);
+}
+.flow span.end{ background:var(--ink); color:#fff; box-shadow:none; }
+.flow i{ font-style:normal; color:var(--faint); font-size:12px; }
+@media (max-width:560px){
+    .flow{ gap:4px; padding:8px; }
+    .flow span{ padding:4px 8px; font-size:10.5px; }
+    .flow i{ font-size:10px; }
+    .stage{ padding:44px 16px 20px; }
+}
+
+.project-body{
+    display:flex;
+    flex-direction:column;
+    flex:1;
+    padding:20px 14px 8px;
+}
+.project-body h3{
+    font-size:21px;
+    line-height:1.2;
+    letter-spacing:-0.024em;
+}
+.project-body p{
+    margin-top:8px;
+    color:var(--muted);
+    font-size:14.5px;
+    line-height:1.6;
+    max-width:62ch;
+}
+.project-foot{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:14px;
+    margin-top:auto;
+    padding-top:18px;
+}
+.tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:5px;
+}
+.tag{
+    padding:3px 10px;
+    border-radius:980px;
+    background:var(--bg);
+    font-size:12px;
+    font-weight:500;
+    color:#424245;
+}
+.project-foot .btn{ flex:none; }
+
+/* ================= Skills ================= */
+
+.skills{
+    background:var(--panel);
+    border-radius:var(--r-tile);
+    padding:6px 30px;
+}
+.skill-category{
+    display:grid;
+    grid-template-columns:240px minmax(0,1fr);
+    gap:10px 24px;
+    align-items:center;
+    padding:20px 0;
+}
+.skill-category + .skill-category{ border-top:1px solid var(--hair); }
+.skill-category h3{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:16px;
+    letter-spacing:-0.018em;
+}
+.skill-category h3 small{
+    display:inline-grid;
+    place-items:center;
+    min-width:24px;
+    height:20px;
+    padding:0 6px;
+    border-radius:980px;
+    background:var(--bg);
+    font-family:var(--sans);
+    font-size:11.5px;
+    font-weight:600;
+    color:var(--muted);
+    font-variant-numeric:tabular-nums;
+}
+.skill-list{ display:flex; flex-wrap:wrap; gap:6px; }
+.skill-item{
+    padding:6px 13px;
+    border-radius:980px;
+    background:var(--bg);
+    font-size:13.5px;
+    transition:background-color .15s;
+}
+.skill-item:hover{ background:var(--field); }
+
+/* ================= Contact ================= */
+
+.contact{ padding:28px 0 20px; }
+
+.contact-tile{
+    position:relative;
+    overflow:hidden;
+    background:var(--ink);
+    color:#f5f5f7;
+    border-radius:var(--r-xl);
+    padding:clamp(18px, 2.5vw, 30px) clamp(20px, 2.8vw, 34px);
+    display:grid;
+    grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);
+    gap:24px 48px;
+    align-items:end;
+}
+.contact-tile::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:radial-gradient(circle at 1px 1px, rgba(255,255,255,.07) 1px, transparent 1.4px) 0 0 / 18px 18px;
+    -webkit-mask-image:linear-gradient(120deg, transparent 35%, #000);
+    mask-image:linear-gradient(120deg, transparent 35%, #000);
+    pointer-events:none;
+}
+.contact-tile > *{ position:relative; }
+.contact-tile .kicker{ color:#6e6e73; }
+.contact-tile h2{
+    font-size:clamp(34px, 4.6vw, 56px);
+    line-height:1;
+    letter-spacing:-0.04em;
+}
+.contact-tile h2 .hs{ color:#6e6e73; }
+.contact-tile p{ margin-top:14px; color:#a1a1a6; max-width:46ch; }
 
 .contact-links{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+.contact-links .btn{
+    justify-content:space-between;
+    height:48px;
+    padding:0 18px;
+    border-radius:16px;
+    background:rgba(255,255,255,.08);
+    color:#f5f5f7;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);
+}
+.contact-links .btn:hover{ background:rgba(255,255,255,.14); }
+.contact-links .btn .arr{ background:rgba(255,255,255,.1); margin-right:-6px; }
+.contact-links .btn.primary{ background:#f5f5f7; color:var(--ink); }
+.contact-links .btn.primary:hover{ background:#fff; }
+.contact-links .btn.primary .arr{ background:var(--field); }
+
+.foot{
     display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
+    justify-content:space-between;
     gap:12px;
-    margin-top:25px;
+    flex-wrap:wrap;
+    margin-top:18px;
+    padding:0 6px;
+    color:var(--faint);
+    font-size:12.5px;
+    font-variant-numeric:tabular-nums;
+}
+.foot a{ color:var(--muted); text-decoration:none; }
+.foot a:hover{ color:var(--fg); }
+
+/* ================= Motion ================= */
+
+@keyframes materialize{
+    from{ opacity:0; transform:scale(.96) translateY(6px); filter:blur(6px); }
+    to  { opacity:1; transform:none; filter:none; }
+}
+@keyframes fade{ from{ opacity:0; } to{ opacity:1; } }
+
+@media (prefers-reduced-motion:no-preference){
+    .pop:not([hidden]){ animation:materialize .24s var(--ease); }
+    .js .reveal{ opacity:0; transform:translateY(14px); transition:opacity .6s var(--ease), transform .6s var(--ease); }
+    .js .reveal.in{ opacity:1; transform:none; }
+}
+@media (prefers-reduced-motion:reduce){
+    .pop:not([hidden]){ animation:fade .15s ease; }
+    .btn:active{ transform:none; }
+    .project-card:hover .window{ transform:none; }
 }
 
-.contact-links a{
-    color:white;
-    text-decoration:none;
-    border:1px solid #6c757d;
-    border-radius:8px;
-    padding:10px 18px;
-    transition:.2s;
+/* ================= Accessibility prefs ================= */
+
+@media (prefers-reduced-transparency:reduce){
+    .head{ background:var(--bg); -webkit-backdrop-filter:none; backdrop-filter:none; }
+    .pop, .photo-tag, .idx{ background:#fff; -webkit-backdrop-filter:none; backdrop-filter:none; }
+}
+@media (prefers-contrast:more){
+    :root{ --faint:#6e6e73; --muted:#3a3a3c; --hair:rgba(0,0,0,.35); }
+    .tile, .hero-tile, .project-card, .skills, .btn, .tag, .skill-item, .focus li{
+        box-shadow:inset 0 0 0 1px #8e8e93;
+    }
 }
 
-.contact-links a:hover{
-    background:white;
-    color:var(--dark-color);
-    border-color:white;
+/* ================= Responsive ================= */
+
+@media (max-width:1040px){
+    .b-bg, .b-goal{ grid-column:span 12; }
+    .b-do{ grid-template-columns:1fr; }
 }
 
-/* Responsive */
-
-@media (max-width:991px){
-
-    .hero{
-        text-align:center;
-        padding:50px 0;
-    }
-
-    .hero-content{
-        margin:auto;
-    }
-
-    .hero p{
-        margin-left:auto;
-        margin-right:auto;
-    }
-
-    .profile{
-        margin-bottom:30px;
-    }
-
-    .hero-title{
-        font-size:2.4rem;
-    }
-
+@media (max-width:860px){
+    .projects{ grid-template-columns:minmax(0,1fr); }
+    .hero-tile{ grid-template-columns:1fr; }
+    .hero-photo{ order:-1; min-height:0; aspect-ratio:4 / 3; margin:10px 10px 0; }
+    .contact-tile{ grid-template-columns:1fr; align-items:start; }
 }
 
-@media (max-width:576px){
+@media (max-width:760px){
+    .head .wrap{ grid-template-columns:1fr auto; }
+    .nav{ display:none; }
+    .menu-btn{ display:inline-flex; }
 
-    .section{
-        padding:50px 0;
-    }
+    .sec-head{ flex-direction:column; align-items:flex-start; }
+    .sec-desc{ text-align:left; }
+    .section{ padding-top:22px; }
+}
 
-    .hero-title{
-        font-size:2rem;
-    }
-
-    .profile{
-        width:160px;
-        height:160px;
-    }
-
-    .project-image{
-        height:200px;
-    }
-
+@media (max-width:560px){
+    .projects{ grid-template-columns:minmax(0,1fr); }
+    .project-foot{ flex-direction:column; align-items:flex-start; }
+    .skills{ padding:4px 22px; }
+    .skill-category{ grid-template-columns:1fr; }
+    .tile{ padding:22px; }
+    .contact-links{ grid-template-columns:1fr; }
+    .head-end .btn.resume{ display:none; }
+    .hero-photo{ aspect-ratio:1 / 1; }
 }
 
 </style>
@@ -304,108 +853,101 @@ footer p{
 
 <!-- Navigation -->
 
-<nav class="navbar navbar-expand-lg bg-white shadow-sm sticky-top">
+<header class="head" id="head">
 
-<div class="container">
+<div class="wrap">
 
-<a class="navbar-brand fw-bold" href="#">
+<a class="brand" href="#">
+    <span class="mono" aria-hidden="true">RL</span>
     Ryu Li
 </a>
 
-<button
-    class="navbar-toggler"
-    type="button"
-    data-bs-toggle="collapse"
-    data-bs-target="#navbar"
-    aria-controls="navbar"
-    aria-expanded="false"
-    aria-label="Toggle navigation"
->
+<nav aria-label="Primary">
+<ul class="nav" id="nav">
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contact</a></li>
+</ul>
+</nav>
 
-<span class="navbar-toggler-icon"></span>
+<div class="head-end">
+    <a class="btn sm primary resume" href="assets/documents/Ryu-Li-Resume.pdf" target="_blank" rel="noopener">Résumé</a>
+    <button
+        class="btn menu-btn"
+        id="menuBtn"
+        type="button"
+        aria-haspopup="true"
+        aria-expanded="false"
+        aria-controls="menuPop"
+        aria-label="Toggle navigation"
+    ><span></span></button>
+</div>
 
-</button>
+</div>
 
-<div class="collapse navbar-collapse" id="navbar">
+</header>
 
-<ul class="navbar-nav ms-auto">
+<div class="pop" id="menuPop" role="menu" aria-label="Navigation" hidden>
+    <a role="menuitem" href="#about">About</a>
+    <a role="menuitem" href="#projects">Projects</a>
+    <a role="menuitem" href="#skills">Skills</a>
+    <a role="menuitem" href="#contact">Contact</a>
+</div>
 
-<li class="nav-item">
-    <a class="nav-link" href="#about">About</a>
-</li>
+<main>
 
-<li class="nav-item">
-    <a class="nav-link" href="#projects">Projects</a>
-</li>
+<!-- Hero -->
 
-<li class="nav-item">
-    <a class="nav-link" href="#skills">Skills</a>
-</li>
+<section class="hero">
 
-<li class="nav-item">
-    <a class="nav-link" href="#contact">Contact</a>
-</li>
+<div class="wrap">
 
+<div class="hero-tile reveal">
+
+<div class="hero-text">
+
+<span class="chip"><i aria-hidden="true"></i>Transportation + Data Engineering</span>
+
+<h1 class="hero-title">Ryu Li</h1>
+
+<h2 class="hero-subtitle">Civil Engineer &amp; <span class="hs">Data Specialist</span></h2>
+
+<p class="lede">
+I'm a Transportation Data Analyst &amp; Engineer at Prime AE Group, where I build
+Power BI dashboards end to end, from pulling raw data out of APIs to modeling it
+and designing the visuals that county agencies and company leadership use to make
+decisions. I pair a civil engineering background with Python, Azure, and ArcGIS
+to turn messy transportation and business data into clear, automated reporting.
+</p>
+
+<div class="hero-actions">
+    <a class="btn primary" href="#projects">View Projects <span class="arr" aria-hidden="true">↓</span></a>
+    <a class="btn" href="#contact">Contact Me</a>
+</div>
+
+<ul class="focus" aria-label="Focus areas">
+    <li>Smart Work Zones</li>
+    <li>Corridor Performance</li>
+    <li>ETL Pipelines</li>
+    <li>Cloud Data Storage</li>
+    <li>API Integration</li>
+    <li>SQL Databases</li>
+    <li>Spatial / GIS Analysis</li>
+    <li>BI Dashboards</li>
 </ul>
 
 </div>
 
-</div>
-
-</nav>
-
-<!-- Hero -->
-
-<section class="hero d-flex align-items-center">
-
-<div class="container">
-
-<div class="row align-items-center justify-content-center g-4">
-
-<div class="col-lg-3 text-center">
-
-<img
-    src="assets/images/profile_pic.jpg"
-    class="profile"
-    alt="Portrait of Ryu Li"
->
-
-</div>
-
-<div class="col-lg-7">
-
-<div class="hero-content">
-
-</p>
-
-<h1 class="hero-title fw-bold mb-2">
-    Ryu Li
-</h1>
-
-<h2 class="hero-subtitle fs-4 mb-4">
-    Civil Engineer & Transportation Data Analyst
-</h2>
-
-<p class="fs-6 text-secondary">
-
-I combine civil engineering expertise with modern data analytics to solve
-transportation challenges. I build automated data pipelines, analyze large
-traffic datasets, and develop interactive Power BI dashboards that help
-agencies improve mobility, monitor Smart Work Zones, and make informed
-operational decisions.
-
-</p>
-
-<a class="btn btn-primary me-2" href="#projects">
-    View Projects
-</a>
-
-<a class="btn btn-outline-dark" href="#contact">
-    Contact Me
-</a>
-
-</div>
-
+<div class="hero-photo">
+    <img src="assets/images/professional_headshot.png" alt="Portrait of Ryu Li">
+    <div class="photo-tag" aria-hidden="true">
+        <span class="mono">RL</span>
+        <span>
+            <strong>Power BI · Python · Azure · ArcGIS</strong>
+            <small>Dashboards, pipelines &amp; spatial analysis</small>
+        </span>
+    </div>
 </div>
 
 </div>
@@ -418,54 +960,86 @@ operational decisions.
 
 <section id="about" class="section">
 
-<div class="container">
+<div class="wrap">
 
-<div class="row justify-content-center">
-
-<div class="col-lg-10">
-
-<h2 class="section-title">
-    About Me
-</h2>
-
-<p class="section-description mb-4">
-
-I specialize in connecting transportation engineering with data analytics,
-data visualization, and automation.
-
-</p>
-
-<div class="about-card">
-
-<p>
-
-As a Transportation Data Analyst with a background in civil engineering,
-I work with mobility, safety, traffic operations, and infrastructure data.
-My work involves transforming complex datasets into useful tools that help
-project teams and public agencies better understand transportation performance.
-
-</p>
-
-<p>
-
-I develop Power BI dashboards, write Python and SQL workflows, connect to APIs,
-automate data-processing pipelines, and perform spatial analysis using GIS
-tools. My projects have included corridor performance analysis, travel-time
-reliability, Smart Work Zone monitoring, crash analysis, bridge-opening
-analysis, traffic signal performance, and transportation event analysis.
-
-</p>
-
-<p>
-
-I enjoy building solutions that do more than display data. My goal is to create
-reliable analytical systems that clearly explain what is happening, why it is
-happening, and where transportation improvements may be needed.
-
-</p>
-
+<div class="sec-head reveal">
+<div>
+<h2 class="sec-title">About me. <span class="hs">Engineering meets data.</span></h2>
+</div>
 </div>
 
+<div class="bento">
+
+<div class="tile b-bg reveal">
+<div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 20h18M5 20V9l7-5 7 5v11M9 20v-6h6v6"/></svg></div>
+<h3>Background</h3>
+<p>
+I earned my B.S. in Civil Engineering from Florida Atlantic University and started
+my career as a transportation engineer, writing Smart Work Zone plans, deploying
+traffic cameras, and building my first Power BI reports from work zone device data.
+Today I work at Prime AE Group, a transportation engineering consulting firm, where
+data analytics has become the core of what I do.
+</p>
+</div>
+
+<div class="tile b-goal reveal">
+<div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/></svg></div>
+<h3>My goal</h3>
+<p>
+I enjoy building solutions that do more than display data. My goal is to create
+reliable, automated reporting that clearly explains what is happening, why it is
+happening, and where improvements are needed, whether for a county's road network
+or a company's bottom line.
+</p>
+<p class="quote" aria-hidden="true">What. Why. <span>Where next.</span></p>
+</div>
+
+<div class="tile b-do reveal">
+<div>
+<div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16M8 15l4-4 3 3 5-6"/></svg></div>
+<h3>What I do</h3>
+</div>
+<p>
+Most of my day is building dashboards from scratch. I call APIs to pull the data,
+clean and transform it with Python and Power Query, store it in Azure Blob Storage,
+model it into a star schema, and design the visuals in Power BI, then automate the
+refresh so reports stay current without manual work. For transportation clients
+that means corridor performance, travel-time reliability, device health, and Smart
+Work Zone monitoring, with ArcGIS handling the spatial side. For our corporate team
+I apply the same process to executive KPI dashboards covering revenue, AR aging,
+sales, and project management metrics. I also get out in the field, setting up
+cameras at intersections to record traffic flow, which is then processed into
+turning-movement and volume counts. Throughout all of it, I rely heavily on AI tools
+to write and debug code, speed up data transformation, and
+prototype new ideas faster.
+</p>
+</div>
+
+<div class="tile b-do b-edu reveal">
+<div>
+<div class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5-10-5z"/><path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/></svg></div>
+<h3>Education</h3>
+</div>
+<div class="edu">
+<div class="edu-top">
+<div>
+<p class="edu-school">Florida Atlantic University</p>
+<p class="edu-degree">Bachelor of Science in Civil Engineering</p>
+</div>
+<div class="edu-meta">
+<span>July 2023</span>
+<span>Boca Raton, Florida</span>
+</div>
+</div>
+<ul class="edu-tags" aria-label="Highlights">
+    <li class="award">People’s Choice Award — Design 1 &amp; 2</li>
+    <li>GPA 3.3</li>
+    <li>Design 1 &amp; 2</li>
+    <li>Prob &amp; Stats for Engineers</li>
+    <li>Engineering Math</li>
+    <li>Calculus 1, 2, 3</li>
+</ul>
+</div>
 </div>
 
 </div>
@@ -476,305 +1050,192 @@ happening, and where transportation improvements may be needed.
 
 <!-- Projects -->
 
-<section id="projects" class="section bg-white">
+<section id="projects" class="section">
 
-<div class="container">
+<div class="wrap">
 
-<h2 class="section-title">
-    Featured Projects
-</h2>
+<div class="sec-head reveal">
+<div>
+<h2 class="sec-title">Featured projects. <span class="hs">Dashboards, pipelines, analysis.</span></h2>
+</div>
+</div>
 
-<p class="section-description mb-5">
-
-A selection of transportation, mobility, safety, and business intelligence
-projects developed using Power BI, Python, SQL, cloud services, and GIS tools.
-
-</p>
-
-<div class="row g-4">
+<div class="projects">
 
 <!-- Port Everglades -->
-
-<div class="col-lg-6">
-
-<div class="card project-card h-100">
-
-<img
-    src="assets/Projects/PortEverglades/PortEvergladespage1.png"
-    class="project-image"
-    alt="Port Everglades transportation dashboard"
->
-
-<div class="card-body">
-
-<h4>
-    Port Everglades Mobility Analysis
-</h4>
-
+<article class="project-card reveal">
+<div class="stage">
+    <span class="idx">01</span>
+    <div class="window">
+        <div class="bar" aria-hidden="true"><i></i><i></i><i></i><b></b></div>
+        <img src="assets/Projects/PortEverglades/PortEvergladespage1.png" class="project-image" alt="Port Everglades transportation dashboard" loading="lazy">
+    </div>
+</div>
+<div class="project-body">
+<h3>Port Everglades Mobility Analysis</h3>
 <p>
-
 An interactive Power BI dashboard designed to evaluate transportation activity
 surrounding Port Everglades. The analysis combines mobility data with cruise
 ship activity, bridge openings, convention events, and traffic safety records.
-
 </p>
-
-<div class="project-tags">
-
-<span class="project-tag">Power BI</span>
-<span class="project-tag">DAX</span>
-<span class="project-tag">Power Query</span>
-<span class="project-tag">Traffic Analytics</span>
-
+<div class="project-foot">
+<ul class="tags">
+    <li class="tag">Power BI</li>
+    <li class="tag">DAX</li>
+    <li class="tag">Power Query</li>
+    <li class="tag">Traffic Analytics</li>
+</ul>
+<a href="projects/port-everglades.html" class="btn sm">View Case Study <span class="arr" aria-hidden="true">→</span></a>
 </div>
-
-<a
-    href="projects/port-everglades.html"
-    class="btn btn-outline-primary"
->
-    View Case Study
-</a>
-
 </div>
-
-</div>
-
-</div>
+</article>
 
 <!-- Hillsborough -->
-
-<div class="col-lg-6">
-
-<div class="card project-card h-100">
-
-<img
-    src="assets/Projects/Hillsborough/Hillsborough_Homepage.png"
-    class="project-image"
-    alt="Hillsborough traffic operations dashboard"
->
-
-<div class="card-body">
-
-<h4>
-    Hillsborough Traffic Operations Dashboard
-</h4>
-
+<article class="project-card reveal">
+<div class="stage">
+    <span class="idx">02</span>
+    <div class="window">
+        <div class="bar" aria-hidden="true"><i></i><i></i><i></i><b></b></div>
+        <img src="assets/Projects/Hillsborough/Hillsborough_Homepage.png" class="project-image" alt="Hillsborough traffic operations dashboard" loading="lazy">
+    </div>
+</div>
+<div class="project-body">
+<h3>Hillsborough Traffic Operations Dashboard</h3>
 <p>
-
 A systemwide transportation dashboard covering corridor performance,
 intersection operations, travel-time reliability, vehicle preemptions,
 and mobility trends across Hillsborough County.
-
 </p>
-
-<div class="project-tags">
-
-<span class="project-tag">Power BI</span>
-<span class="project-tag">Python</span>
-<span class="project-tag">SQL</span>
-<span class="project-tag">Azure</span>
-
+<div class="project-foot">
+<ul class="tags">
+    <li class="tag">Power BI</li>
+    <li class="tag">Python</li>
+    <li class="tag">SQL</li>
+    <li class="tag">Azure</li>
+</ul>
+<a href="projects/hillsborough.html" class="btn sm">View Case Study <span class="arr" aria-hidden="true">→</span></a>
 </div>
-
-<a
-    href="projects/hillsborough.html"
-    class="btn btn-outline-primary"
->
-    View Case Study
-</a>
-
 </div>
-
-</div>
-
-</div>
+</article>
 
 <!-- Sunrise -->
-
-<div class="col-lg-6">
-
-<div class="card project-card h-100">
-
-<img
-    src="assets/Projects/Sunrise/Sunrise_Homepage.png"
-    class="project-image"
-    alt="Sunrise transportation performance dashboard"
->
-
-<div class="card-body">
-
-<h4>
-    I-95 Sunrise Express Analysis
-</h4>
-
+<article class="project-card reveal">
+<div class="stage">
+    <span class="idx">03</span>
+    <div class="window">
+        <div class="bar" aria-hidden="true"><i></i><i></i><i></i><b></b></div>
+        <img src="assets/Projects/Sunrise/Sunrise_Homepage.png" class="project-image" alt="Sunrise transportation performance dashboard" loading="lazy">
+    </div>
+</div>
+<div class="project-body">
+<h3>I-95 Sunrise Express Analysis</h3>
 <p>
-
 A transportation performance dashboard used to evaluate mobility, safety,
 drive-test results, travel-time conditions, and project milestones along the
 I-95 Sunrise Express corridor.
-
 </p>
-
-<div class="project-tags">
-
-<span class="project-tag">Power BI</span>
-<span class="project-tag">RITIS</span>
-<span class="project-tag">GIS</span>
-<span class="project-tag">Mobility Analysis</span>
-
+<div class="project-foot">
+<ul class="tags">
+    <li class="tag">Power BI</li>
+    <li class="tag">RITIS</li>
+    <li class="tag">GIS</li>
+    <li class="tag">Mobility Analysis</li>
+</ul>
+<a href="projects/sunrise.html" class="btn sm">View Case Study <span class="arr" aria-hidden="true">→</span></a>
 </div>
-
-<a
-    href="projects/sunrise.html"
-    class="btn btn-outline-primary"
->
-    View Case Study
-</a>
-
 </div>
-
-</div>
-
-</div>
+</article>
 
 <!-- Frisco -->
-
-<div class="col-lg-6">
-
-<div class="card project-card h-100">
-
-<img
-    src="assets/Projects/Frisco/Frisco_Homepage.png"
-    class="project-image"
-    alt="Frisco transportation dashboard"
->
-
-<div class="card-body">
-
-<h4>
-    Frisco Transportation Dashboard
-</h4>
-
+<article class="project-card reveal">
+<div class="stage">
+    <span class="idx">04</span>
+    <div class="window">
+        <div class="bar" aria-hidden="true"><i></i><i></i><i></i><b></b></div>
+        <img src="assets/Projects/Frisco/Frisco_Homepage.png" class="project-image" alt="Frisco transportation dashboard" loading="lazy">
+    </div>
+</div>
+<div class="project-body">
+<h3>Frisco Transportation Dashboard</h3>
 <p>
-
 A Power BI reporting solution that communicates systemwide mobility and
 safety performance through interactive maps, performance indicators,
 trend charts, and transportation metrics.
-
 </p>
-
-<div class="project-tags">
-
-<span class="project-tag">Power BI</span>
-<span class="project-tag">Safety</span>
-<span class="project-tag">Mobility</span>
-<span class="project-tag">Data Visualization</span>
-
+<div class="project-foot">
+<ul class="tags">
+    <li class="tag">Power BI</li>
+    <li class="tag">Safety</li>
+    <li class="tag">Mobility</li>
+    <li class="tag">Data Visualization</li>
+</ul>
+<a href="projects/frisco.html" class="btn sm">View Case Study <span class="arr" aria-hidden="true">→</span></a>
 </div>
-
-<a
-    href="projects/frisco.html"
-    class="btn btn-outline-primary"
->
-    View Case Study
-</a>
-
 </div>
-
-</div>
-
-</div>
+</article>
 
 <!-- Event Requests -->
-
-<div class="col-lg-6">
-
-<div class="card project-card h-100">
-
-<img
-    src="assets/Projects/Corporate/EventRequestForm.png"
-    class="project-image"
-    alt="Corporate event request dashboard"
->
-
-<div class="card-body">
-
-<h4>
-    Event Request Management Dashboard
-</h4>
-
+<article class="project-card reveal">
+<div class="stage">
+    <span class="idx">05</span>
+    <div class="window">
+        <div class="bar" aria-hidden="true"><i></i><i></i><i></i><b></b></div>
+        <img src="assets/Projects/Corporate/EventRequestForm.png" class="project-image" alt="Corporate event request dashboard" loading="lazy">
+    </div>
+</div>
+<div class="project-body">
+<h3>Event Request Management Dashboard</h3>
 <p>
-
 An internal business intelligence dashboard used to analyze employee event
 requests, estimated expenses, attendance, sponsorships, travel requirements,
 and organizational participation.
-
 </p>
-
-<div class="project-tags">
-
-<span class="project-tag">Power BI</span>
-<span class="project-tag">Business Intelligence</span>
-<span class="project-tag">DAX</span>
-<span class="project-tag">Data Modeling</span>
-
+<div class="project-foot">
+<ul class="tags">
+    <li class="tag">Power BI</li>
+    <li class="tag">Business Intelligence</li>
+    <li class="tag">DAX</li>
+    <li class="tag">Data Modeling</li>
+</ul>
+<a href="projects/event-requests.html" class="btn sm">View Case Study <span class="arr" aria-hidden="true">→</span></a>
 </div>
-
-<a
-    href="projects/event-requests.html"
-    class="btn btn-outline-primary"
->
-    View Case Study
-</a>
-
 </div>
-
-</div>
-
-</div>
+</article>
 
 <!-- Traffic Pipeline -->
-
-<div class="col-lg-6">
-
-<div class="card project-card h-100">
-
-<div class="card-body d-flex flex-column">
-
-<h4>
-    Automated Traffic Data Pipeline
-</h4>
-
+<article class="project-card reveal">
+<div class="stage">
+    <span class="idx">06</span>
+    <div class="window">
+        <div class="bar" aria-hidden="true"><i></i><i></i><i></i><b></b></div>
+        <div class="flow" role="img" aria-label="Pipeline: APIs to Python to Azure Blob Storage to Power BI">
+        <span>APIs</span><i aria-hidden="true">→</i>
+        <span>Python</span><i aria-hidden="true">→</i>
+        <span>Azure Blob</span><i aria-hidden="true">→</i>
+        <span class="end">Power BI</span>
+    </div>
+    </div>
+</div>
+<div class="project-body">
+<h3>Automated Traffic Data Pipeline</h3>
 <p>
-
-An automated ETL workflow that retrieves transportation data from APIs,
-processes and validates records using Python, stores the results in cloud
-storage, and delivers refreshed datasets to Power BI.
-
+An automated ETL pipeline in Azure Data Factory that pulls travel-time data for
+162 Hillsborough County roads from external APIs and consolidates the per-segment
+CSVs into a centralized repository for Power BI. Python optimizations cut processing
+time by 80%, from 5 hours to 1.
 </p>
-
-<div class="project-tags">
-
-<span class="project-tag">Python</span>
-<span class="project-tag">SQL</span>
-<span class="project-tag">Azure Blob Storage</span>
-<span class="project-tag">APIs</span>
-<span class="project-tag">ETL</span>
-
+<div class="project-foot">
+<ul class="tags">
+    <li class="tag">Azure Data Factory</li>
+    <li class="tag">Python</li>
+    <li class="tag">Azure Blob Storage</li>
+    <li class="tag">APIs</li>
+    <li class="tag">ETL</li>
+</ul>
+<a href="projects/traffic-data-pipeline.html" class="btn sm">View Case Study <span class="arr" aria-hidden="true">→</span></a>
 </div>
-
-<a
-    href="projects/traffic-data-pipeline.html"
-    class="btn btn-outline-primary mt-auto align-self-start"
->
-    View Case Study
-</a>
-
 </div>
-
-</div>
-
-</div>
+</article>
 
 </div>
 
@@ -786,110 +1247,82 @@ storage, and delivers refreshed datasets to Power BI.
 
 <section id="skills" class="section">
 
-<div class="container">
+<div class="wrap">
 
-<h2 class="section-title">
-    Technical Skills
-</h2>
+<div class="sec-head reveal">
+<div>
+<h2 class="sec-title">Technical skills. <span class="hs">Tools I build with.</span></h2>
+</div>
+</div>
 
-<p class="section-description">
-
-Tools and technologies I use to develop transportation analytics,
-automated data workflows, spatial analyses, and business intelligence solutions.
-
-</p>
-
-<div class="row g-4 skills-grid">
-
-<div class="col-md-6 col-lg-3">
+<div class="skills reveal">
 
 <div class="skill-category">
-
-<h4>
-    Data Visualization
-</h4>
-
-<div class="skill-list">
-
-<span class="skill-item">Power BI</span>
-<span class="skill-item">DAX</span>
-<span class="skill-item">Power Query</span>
-<span class="skill-item">Matplotlib</span>
-<span class="skill-item">ArcGIS Dashboards</span>
-
+<h3>Data Visualization</h3>
+<ul class="skill-list">
+    <li class="skill-item">Power BI</li>
+    <li class="skill-item">DAX</li>
+    <li class="skill-item">Power Query</li>
+    <li class="skill-item">Matplotlib</li>
+    <li class="skill-item">ArcGIS Dashboards</li>
+    <li class="skill-item">Power BI Service &amp; Gateways</li>
+    <li class="skill-item">Paginated Reports</li>
+    <li class="skill-item">KPI &amp; Scorecard Design</li>
+    <li class="skill-item">Interactive Maps</li>
+</ul>
 </div>
-
-</div>
-
-</div>
-
-<div class="col-md-6 col-lg-3">
 
 <div class="skill-category">
-
-<h4>
-    Programming
-</h4>
-
-<div class="skill-list">
-
-<span class="skill-item">Python</span>
-<span class="skill-item">SQL</span>
-<span class="skill-item">Pandas</span>
-<span class="skill-item">GeoPandas</span>
-<span class="skill-item">HTML</span>
-<span class="skill-item">CSS</span>
-
+<h3>Programming</h3>
+<ul class="skill-list">
+    <li class="skill-item">Python</li>
+    <li class="skill-item">SQL</li>
+    <li class="skill-item">HTML</li>
+    <li class="skill-item">CSS</li>
+    <li class="skill-item">R</li>
+    <li class="skill-item">Shapely</li>
+    <li class="skill-item">Requests (API calls)</li>
+</ul>
 </div>
-
-</div>
-
-</div>
-
-<div class="col-md-6 col-lg-3">
 
 <div class="skill-category">
-
-<h4>
-    Data Engineering
-</h4>
-
-<div class="skill-list">
-
-<span class="skill-item">Azure</span>
-<span class="skill-item">Snowflake</span>
-<span class="skill-item">REST APIs</span>
-<span class="skill-item">ETL Pipelines</span>
-<span class="skill-item">Git</span>
-<span class="skill-item">GitHub</span>
-
+<h3>Data Engineering</h3>
+<ul class="skill-list">
+    <li class="skill-item">Azure</li>
+    <li class="skill-item">ETL Pipelines</li>
+    <li class="skill-item">GitHub</li>
+    <li class="skill-item">Azure Blob Storage</li>
+    <li class="skill-item">SQL Server</li>
+    <li class="skill-item">Data Modeling (Star Schema)</li>
+    <li class="skill-item">Task Scheduling &amp; Automation</li>
+    <li class="skill-item">Microsoft Fabric</li>
+</ul>
 </div>
-
-</div>
-
-</div>
-
-<div class="col-md-6 col-lg-3">
 
 <div class="skill-category">
-
-<h4>
-    Transportation
-</h4>
-
-<div class="skill-list">
-
-<span class="skill-item">Travel Time Index</span>
-<span class="skill-item">Traffic Reliability</span>
-<span class="skill-item">Crash Analysis</span>
-<span class="skill-item">Corridor Analysis</span>
-<span class="skill-item">Smart Work Zones</span>
-<span class="skill-item">GIS</span>
-
+<h3>Transportation</h3>
+<ul class="skill-list">
+    <li class="skill-item">Travel Time Index</li>
+    <li class="skill-item">Traffic Reliability</li>
+    <li class="skill-item">Crash Analysis</li>
+    <li class="skill-item">Corridor Analysis</li>
+    <li class="skill-item">Smart Work Zones</li>
+    <li class="skill-item">GIS</li>
+    <li class="skill-item">RITIS</li>
+    <li class="skill-item">INRIX / HERE Probe Data</li>
+    <li class="skill-item">Synchro / Vissim</li>
+</ul>
 </div>
 
-</div>
-
+<div class="skill-category">
+<h3>AI &amp; Automation</h3>
+<ul class="skill-list">
+    <li class="skill-item">Prompt Engineering</li>
+    <li class="skill-item">AI-Assisted Coding</li>
+    <li class="skill-item">LLM Tools</li>
+    <li class="skill-item">AI Agents</li>
+    <li class="skill-item">Workflow Automation</li>
+</ul>
 </div>
 
 </div>
@@ -898,67 +1331,109 @@ automated data workflows, spatial analyses, and business intelligence solutions.
 
 </section>
 
+</main>
+
 <!-- Contact -->
 
-<footer id="contact">
+<footer id="contact" class="contact">
 
-<div class="container text-center">
+<div class="wrap">
 
-<h2 class="fw-bold">
-    Let's Connect
-</h2>
+<div class="contact-tile reveal">
 
-<p class="mt-3 mb-0">
-
+<div>
+<h2>Let's connect.</h2>
+<p>
 Interested in transportation analytics, data visualization, or automated
 reporting solutions? Feel free to connect with me.
-
 </p>
+</div>
 
 <div class="contact-links">
-
-<a
-    href="https://github.com/ryu-li98"
-    target="_blank"
-    rel="noopener noreferrer"
->
-    GitHub
-</a>
-
-<a
-    href="https://www.linkedin.com/in/ryuli/"
-    target="_blank"
-    rel="noopener noreferrer"
->
-    LinkedIn
-</a>
-
-<a href="mailto:ryuli2198@gmail.com">
-    Email
-</a>
-
-<a
-    href="assets/documents/Ryu-Li-Resume.pdf"
-    target="_blank"
->
-    View Résumé
-</a>
+    <a class="btn" href="https://github.com/ryu-li98" target="_blank" rel="noopener noreferrer">GitHub <span class="arr" aria-hidden="true">↗</span></a>
+    <a class="btn" href="https://www.linkedin.com/in/ryuli/" target="_blank" rel="noopener noreferrer">LinkedIn <span class="arr" aria-hidden="true">↗</span></a>
+    <a class="btn" href="mailto:ryuli2198@gmail.com">Email <span class="arr" aria-hidden="true">→</span></a>
+    <a class="btn primary" href="assets/documents/Ryu-Li-Resume.pdf" target="_blank" rel="noopener">View Résumé <span class="arr" aria-hidden="true">↗</span></a>
+</div>
 
 </div>
 
-<p class="small mt-4 mb-0">
-
-© 2026 Ryu Li. Built with HTML, CSS, Bootstrap, and GitHub Pages.
-
-</p>
+<div class="foot">
+    <span>© 2026 Ryu Li. Built with HTML, CSS, and GitHub Pages.</span>
+    <a href="#">Back to top ↑</a>
+</div>
 
 </div>
 
 </footer>
 
-<script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
-></script>
+<script>
+(() => {
+    document.documentElement.classList.add("js");
+
+    const head = document.getElementById("head");
+    const btn = document.getElementById("menuBtn");
+    const pop = document.getElementById("menuPop");
+    const nav = document.getElementById("nav");
+
+    /* Header hairline once scrolled */
+    const onScroll = () => head.classList.toggle("scrolled", window.scrollY > 4);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+
+    /* Mobile menu (frosted popover) */
+    const place = () => {
+        const r = btn.getBoundingClientRect();
+        pop.style.top = (r.bottom + 8) + "px";
+        pop.style.right = Math.max(12, window.innerWidth - r.right) + "px";
+    };
+    const open = () => {
+        place();
+        pop.hidden = false;
+        btn.setAttribute("aria-expanded", "true");
+        pop.querySelector("a").focus();
+    };
+    const close = (refocus) => {
+        if (pop.hidden) return;
+        pop.hidden = true;
+        btn.setAttribute("aria-expanded", "false");
+        if (refocus) btn.focus();
+    };
+    btn.addEventListener("click", () => pop.hidden ? open() : close(false));
+    pop.addEventListener("click", e => { if (e.target.closest("a")) close(false); });
+    document.addEventListener("pointerdown", e => {
+        if (!pop.hidden && !pop.contains(e.target) && !btn.contains(e.target)) close(false);
+    });
+    document.addEventListener("keydown", e => {
+        if (pop.hidden) return;
+        const items = [...pop.querySelectorAll("a")];
+        const i = items.indexOf(document.activeElement);
+        if (e.key === "Escape") { e.preventDefault(); close(true); }
+        else if (e.key === "ArrowDown") { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+        else if (e.key === "ArrowUp") { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+        else if (e.key === "Home") { e.preventDefault(); items[0].focus(); }
+        else if (e.key === "End") { e.preventDefault(); items[items.length - 1].focus(); }
+        else if (e.key === "Tab") { close(false); }
+    });
+    window.addEventListener("resize", () => {
+        if (!pop.hidden) place();
+        if (window.innerWidth > 760) close(false);
+    });
+
+    if ("IntersectionObserver" in window) {
+        /* reveal on scroll */
+        const ro = new IntersectionObserver(entries => {
+            entries.forEach(en => { if (en.isIntersecting){ en.target.classList.add("in"); ro.unobserve(en.target); } });
+        }, { rootMargin: "0px 0px -8% 0px" });
+        document.querySelectorAll(".reveal").forEach((el, i) => {
+            el.style.transitionDelay = (el.closest(".projects") ? (i % 2) * 80 : 0) + "ms";
+            ro.observe(el);
+        });
+    } else {
+        document.querySelectorAll(".reveal").forEach(el => el.classList.add("in"));
+    }
+})();
+</script>
 
 </body>
 
