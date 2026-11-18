@@ -1,51 +1,31 @@
-# Civil Engineer & Transportation Data Analyst | Power BI • Python • SQL • Azure
+<h1 align="center">Ryu Li</h1>
 
-I combine civil engineering expertise with modern data analytics to solve complex transportation challenges. I specialize in building end-to-end data pipelines, analyzing large-scale traffic datasets using SQL and Python, and developing interactive Power BI dashboards that support agencies in improving mobility, monitoring Smart Work Zones, and making data-driven operational decisions.
+<p align="center">
+  <b>Civil Engineer &amp; Data Specialist</b><br>
+  Transportation analytics · Power BI · Python · Azure · ArcGIS
+</p>
 
-Below you will find pictures of dashboards I have created in Power BI.
+<p align="center">
+  <a href="https://ryu-li98.github.io"><b>View my portfolio at ryu-li98.github.io →</b></a>
+</p>
 
-## Here is some of my work:
-### Port Everglades Summary Dashboard
-![Alt text](https://ryu-li98.github.io/assets/Projects/PortEverglades/PortEvergladespage1.png)
+---
 
-![Alt text](https://ryu-li98.github.io/assets/Projects/PortEverglades/PortEvergladespage2.png)
+This repository holds the source code for my personal portfolio website. **The portfolio itself lives at [ryu-li98.github.io](https://ryu-li98.github.io)**, where you can see my featured projects, full case studies, skills, education, and résumé.
 
-### Event Summary Page
-![Alt text](https://ryu-li98.github.io/assets/Projects/Corporate/EventRequestForm.png)
+## What you'll find on the site
 
-### Hillsborough Dashboard
-![Alt text](https://ryu-li98.github.io/assets/Projects/Hillsborough/Hillsborough_Homepage.png)
+- **Featured projects:** Power BI dashboards and data pipelines I've built for transportation agencies and corporate teams
+- **Case studies:** how each project was built, from data collection and modeling to the final dashboard and the value it delivered
+- **Skills and education:** the tools I use every day and my B.S. in Civil Engineering from Florida Atlantic University
+- **Résumé and contact:** links to download my résumé, email me, or connect on LinkedIn
 
-![Alt text](https://ryu-li98.github.io/assets/Projects/Hillsborough/Hillsborough_Intersections.png)
+## Contact
 
-![Alt text](https://ryu-li98.github.io/assets/Projects/Hillsborough/Hillsborough_Corridors.png)
+- **Portfolio:** [ryu-li98.github.io](https://ryu-li98.github.io)
+- **LinkedIn:** [linkedin.com/in/ryuli](https://www.linkedin.com/in/ryuli/)
+- **Résumé:** [View PDF](https://ryu-li98.github.io/assets/documents/Ryu-Li-Resume.pdf)
 
-![Alt text](https://ryu-li98.github.io/assets/Projects/Hillsborough/Hillsborough_Mobility.png)
+## About this repository
 
-![Alt text](https://ryu-li98.github.io/assets/Projects/Hillsborough/Hillsborough_Mobility_2.png)
-
-![Alt text](https://ryu-li98.github.io/assets/Projects/Hillsborough/Hillsborough_Mobility_3.png)
-
-![Alt text](https://ryu-li98.github.io/assets/Projects/Hillsborough/Hillsborough_Preemptions.png)
-
-![Alt text](https://ryu-li98.github.io/assets/Projects/Hillsborough/Hillsborough_Systemwide_Summary.png)
-
-### Frisco Dashboard
-![Alt text](https://ryu-li98.github.io/assets/Projects/Frisco/Frisco_Homepage.png)
-
-![Alt text](https://ryu-li98.github.io/assets/Projects/Frisco/Frisco_Safety.png)
-
-![Alt text](https://ryu-li98.github.io/assets/Projects/Frisco/Frisco_Mobility.png)
-
-### Sunrise Dashboard
-![Alt text](https://ryu-li98.github.io/assets/Projects/Sunrise/Sunrise_Homepage.png)
-
-![Alt text](https://ryu-li98.github.io/assets/Projects/Sunrise/Sunrise_Safety.png)
-
-![Alt text](https://ryu-li98.github.io/assets/Projects/Sunrise/Sunrise_Mobility.png)
-
-![Alt text](https://ryu-li98.github.io/assets/Projects/Sunrise/Sunrise_Drive_Test.png)
-
-![Alt text](https://ryu-li98.github.io/assets/Projects/Sunrise/Sunrise_Timeline.png)
-
-![Alt text](https://ryu-li98.github.io/assets/Projects/Beeline/Beeline_TMC.png)
+The site is a hand-built static page (HTML, CSS, and a little JavaScript) hosted on GitHub Pages. The dashboards were built for clients, so only selected screenshots are shown.
