@@ -1,0 +1,2288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>SW 10th St. Mobility Improvements — Ryu Li</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ===== Shared site styles (copied from index.html) ===== */
+
+
+/* ================= Tokens ================= */
+
+:root{
+    --bg:#f5f5f7;
+    --panel:#ffffff;
+    --field:#ececf0;
+    --line:#d2d2d7;
+    --hair:rgba(0,0,0,.08);
+    --grid:#e8e8ed;
+    --fg:#1d1d1f;
+    --muted:#6e6e73;
+    --faint:#a1a1a6;
+    --ink:#1d1d1f;          /* dark surfaces */
+    --accent:#1d1d1f; --accent-ink:#fff;
+    --sans:-apple-system, BlinkMacSystemFont, "SF Pro Text", "Geist", system-ui, "Segoe UI", sans-serif;
+    --display:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Geist", system-ui, "Segoe UI", sans-serif;
+    --r-xl:32px;
+    --r-tile:24px;
+    --r-img:16px;
+    --headh:60px;
+    --ease:cubic-bezier(.2,.8,.2,1);
+    --gap:14px;
+    color-scheme:light;
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+
+html{
+    scroll-padding-top:calc(var(--headh) + 14px);
+    -webkit-text-size-adjust:100%;
+}
+@media (prefers-reduced-motion:no-preference){ html{ scroll-behavior:smooth; } }
+
+body{
+    margin:0;
+    background:var(--bg);
+    color:var(--fg);
+    font-family:var(--sans);
+    font-size:15px;
+    line-height:1.5;
+    letter-spacing:-0.011em;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+}
+
+img{ display:block; max-width:100%; }
+a{ color:inherit; }
+p{ margin:0; }
+ul{ margin:0; padding:0; list-style:none; }
+h1,h2,h3{ margin:0; font-family:var(--display); font-weight:600; text-wrap:balance; }
+
+:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; border-radius:6px; }
+
+.wrap{
+    max-width:1200px;
+    margin:0 auto;
+    padding-left:max(24px, env(safe-area-inset-left));
+    padding-right:max(24px, env(safe-area-inset-right));
+}
+
+/* ================= Pills ================= */
+
+.btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    height:40px;
+    padding:0 18px;
+    border:0;
+    border-radius:980px;
+    background:var(--panel);
+    color:var(--fg);
+    font:500 14px/1 var(--sans);
+    letter-spacing:-0.01em;
+    text-decoration:none;
+    cursor:pointer;
+    box-shadow:inset 0 0 0 1px var(--hair);
+    transition:background-color .15s, color .15s, box-shadow .15s;
+    -webkit-tap-highlight-color:transparent;
+}
+.btn:hover{ background:var(--field); }
+.btn:active{ transform:scale(.97); }
+
+.btn.primary{ background:var(--accent); color:var(--accent-ink); box-shadow:none; }
+.btn.primary:hover{ background:#000; }
+
+.btn.sm{ height:34px; padding:0 14px; font-size:13.5px; }
+
+.btn .arr{
+    display:inline-grid;
+    place-items:center;
+    width:20px; height:20px;
+    margin-right:-8px;
+    border-radius:50%;
+    background:var(--field);
+    font-size:11px;
+    transition:transform .2s var(--ease), background-color .15s;
+}
+.btn.primary .arr{ background:rgba(255,255,255,.16); }
+.btn:hover .arr{ transform:translateX(2px); }
+
+/* ================= Header ================= */
+
+.head{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:rgba(245,245,247,.72);
+    -webkit-backdrop-filter:saturate(180%) blur(28px);
+    backdrop-filter:saturate(180%) blur(28px);
+}
+.head::after{
+    content:"";
+    position:absolute;
+    inset:100% 0 auto;
+    height:1px;
+    background:var(--hair);
+    opacity:0;
+    transition:opacity .2s;
+}
+.head.scrolled::after{ opacity:1; }
+
+.head .wrap{
+    height:var(--headh);
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    gap:16px;
+}
+
+.brand{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    font-family:var(--display);
+    font-weight:600;
+    font-size:16px;
+    letter-spacing:-0.02em;
+    text-decoration:none;
+    justify-self:start;
+}
+.mono{
+    display:grid;
+    place-items:center;
+    width:30px; height:30px;
+    border-radius:50%;
+    background:var(--ink);
+    color:#fff;
+    font-size:11.5px;
+    letter-spacing:.02em;
+}
+
+/* segmented nav */
+.nav{
+    position:relative;
+    display:flex;
+    padding:3px;
+    border-radius:980px;
+    background:rgba(0,0,0,.05);
+}
+.nav a{
+    position:relative;
+    z-index:1;
+    display:block;
+    padding:6px 15px;
+    border-radius:980px;
+    font-size:13.5px;
+    font-weight:500;
+    color:var(--muted);
+    text-decoration:none;
+    transition:color .15s, background-color .15s, box-shadow .15s;
+}
+.nav a:hover{ color:var(--fg); background:var(--panel); box-shadow:0 1px 3px rgba(0,0,0,.08); }
+.head-end{
+    justify-self:end;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+/* mobile menu */
+.menu-btn{
+    display:none;
+    width:38px; height:38px;
+    padding:0;
+    justify-content:center;
+}
+.menu-btn span,
+.menu-btn span::before,
+.menu-btn span::after{
+    content:"";
+    display:block;
+    width:15px; height:1.5px;
+    border-radius:2px;
+    background:var(--fg);
+    position:relative;
+    transition:transform .2s var(--ease), background-color .15s;
+}
+.menu-btn span::before{ position:absolute; top:-5px; }
+.menu-btn span::after{ position:absolute; top:5px; }
+.menu-btn[aria-expanded="true"] span{ background:transparent; }
+.menu-btn[aria-expanded="true"] span::before{ transform:translateY(5px) rotate(45deg); }
+.menu-btn[aria-expanded="true"] span::after{ transform:translateY(-5px) rotate(-45deg); }
+
+.pop{
+    position:fixed;
+    z-index:60;
+    min-width:210px;
+    padding:6px;
+    border-radius:18px;
+    background:rgba(255,255,255,.86);
+    -webkit-backdrop-filter:saturate(180%) blur(28px);
+    backdrop-filter:saturate(180%) blur(28px);
+    box-shadow:0 22px 60px rgba(0,0,0,.16), inset 0 0 0 1px var(--hair);
+    transform-origin:top right;
+}
+.pop[hidden]{ display:none; }
+.pop a{
+    display:flex;
+    justify-content:space-between;
+    padding:10px 14px;
+    border-radius:10px;
+    font-size:15px;
+    text-decoration:none;
+}
+.pop a::after{ content:"→"; color:var(--faint); font-size:13px; }
+.pop a:hover, .pop a:focus-visible{ background:rgba(0,0,0,.06); outline:none; }
+
+/* ================= Hero ================= */
+
+.hero{ padding:20px 0 0; }
+@media (max-width:760px){ .hero{ padding-top:8px; } }
+
+.hero-tile{
+    display:grid;
+    grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);
+    background:var(--panel);
+    border-radius:var(--r-xl);
+    overflow:hidden;
+}
+
+.hero-text{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:clamp(28px, 4.5vw, 56px);
+}
+
+.chip{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    align-self:flex-start;
+    height:28px;
+    padding:0 12px;
+    border-radius:980px;
+    background:var(--bg);
+    font-size:12.5px;
+    font-weight:500;
+    color:var(--muted);
+    letter-spacing:.005em;
+}
+
+.hero-title{
+    margin-top:18px;
+    font-size:clamp(46px, 7vw, 84px);
+    line-height:.98;
+    letter-spacing:-0.045em;
+}
+
+.hero-subtitle{
+    margin-top:12px;
+    font-size:clamp(20px, 2.2vw, 28px);
+    line-height:1.15;
+    letter-spacing:-0.025em;
+    color:var(--fg);
+}
+.hero-subtitle .hs{ color:var(--faint); }
+
+.lede{
+    margin-top:18px;
+    max-width:60ch;
+    color:var(--muted);
+    font-size:16px;
+    line-height:1.6;
+}
+
+.hero-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:26px;
+}
+
+.focus{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:6px;
+    margin-top:30px;
+    padding-top:20px;
+    border-top:1px solid var(--hair);
+}
+.focus-label{
+    font-size:11.5px;
+    font-weight:600;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--faint);
+    margin-right:6px;
+}
+.focus li{
+    font-size:13px;
+    padding:4px 11px;
+    border-radius:980px;
+    background:var(--bg);
+    color:var(--fg);
+}
+
+.hero-photo{
+    position:relative;
+    margin:12px;
+    border-radius:calc(var(--r-xl) - 12px);
+    overflow:hidden;
+    background:linear-gradient(160deg, #e8e8ed, #d2d2d7);
+    min-height:420px;
+}
+.hero-photo img{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center 25%;
+}
+.photo-tag{
+    position:absolute;
+    left:14px; bottom:14px; right:14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 14px;
+    border-radius:16px;
+    background:rgba(255,255,255,.78);
+    -webkit-backdrop-filter:saturate(180%) blur(24px);
+    backdrop-filter:saturate(180%) blur(24px);
+    box-shadow:0 8px 30px rgba(0,0,0,.12), inset 0 0 0 1px rgba(255,255,255,.5);
+}
+.photo-tag strong{ font-size:13.5px; font-weight:600; letter-spacing:-0.01em; display:block; }
+.photo-tag small{ font-size:12px; color:var(--muted); display:block; }
+.photo-tag .mono{ width:34px; height:34px; flex:none; }
+
+/* ================= Sections ================= */
+
+.section{ padding:28px 0 0; }
+
+.sec-head{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:12px 40px;
+    margin-bottom:10px;
+}
+.kicker{
+    display:block;
+    margin-bottom:8px;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--faint);
+    font-variant-numeric:tabular-nums;
+}
+.sec-title{
+    font-size:clamp(28px, 3.2vw, 42px);
+    line-height:1.06;
+    letter-spacing:-0.035em;
+}
+.sec-title .hs{ color:var(--faint); }
+@media (min-width:761px){ .sec-title{ white-space:nowrap; } }
+
+.sec-desc{
+    max-width:440px;
+    color:var(--muted);
+    font-size:14.5px;
+    text-align:right;
+}
+
+/* ================= About (bento) ================= */
+
+.bento{
+    display:grid;
+    grid-template-columns:repeat(12, minmax(0,1fr));
+    gap:var(--gap);
+}
+.tile{
+    background:var(--panel);
+    border-radius:var(--r-tile);
+    padding:28px 30px;
+}
+.tile h3{
+    font-size:19px;
+    letter-spacing:-0.022em;
+    margin-bottom:10px;
+}
+.tile p{ color:var(--muted); line-height:1.6; }
+
+.b-bg   { grid-column:span 7; }
+.b-goal { grid-column:span 5; background:var(--ink); color:#f5f5f7; display:flex; flex-direction:column; }
+.b-goal p{ color:#a1a1a6; }
+.b-goal h3{ color:#f5f5f7; }
+.b-goal .quote{
+    margin-top:auto;
+    padding-top:22px;
+    font-family:var(--display);
+    font-size:22px;
+    font-weight:600;
+    line-height:1.2;
+    letter-spacing:-0.025em;
+    color:#f5f5f7;
+}
+.b-goal .quote span{ color:#6e6e73; }
+.b-do   { grid-column:span 12; display:grid; grid-template-columns:200px minmax(0,1fr); gap:12px 28px; align-items:start; }
+.b-do h3{ margin:0; font-size:clamp(22px, 2.2vw, 28px); letter-spacing:-0.03em; }
+
+.edu-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:8px 24px;
+    flex-wrap:wrap;
+}
+.edu-school{
+    font-family:var(--display);
+    font-size:19px;
+    font-weight:600;
+    letter-spacing:-0.022em;
+    color:var(--fg) !important;
+    line-height:1.25 !important;
+}
+.edu-degree{ margin-top:2px; }
+.edu-meta{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-end;
+    font-size:13.5px;
+    color:var(--muted);
+    font-variant-numeric:tabular-nums;
+    line-height:1.5;
+}
+.edu-meta span:first-child{ color:var(--fg); font-weight:500; }
+.edu-tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-top:16px;
+}
+.edu-tags li{
+    padding:5px 12px;
+    border-radius:980px;
+    background:var(--bg);
+    font-size:13px;
+}
+.edu-tags li.award{
+    background:var(--ink);
+    color:#fff;
+    font-weight:500;
+}
+@media (max-width:560px){
+    .edu-meta{ align-items:flex-start; }
+}
+
+.tile .ico{
+    display:grid;
+    place-items:center;
+    width:38px; height:38px;
+    border-radius:12px;
+    background:var(--bg);
+    margin-bottom:18px;
+}
+.b-goal .ico{ background:rgba(255,255,255,.1); }
+.ico svg{ width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+
+/* ================= Projects ================= */
+
+.projects{
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0,1fr));
+    gap:20px;
+}
+
+.project-card{
+    display:flex;
+    flex-direction:column;
+    background:var(--panel);
+    border-radius:var(--r-tile);
+    padding:12px;
+    transition:box-shadow .3s var(--ease);
+}
+.project-card:hover{ box-shadow:0 20px 50px rgba(0,0,0,.07); }
+
+/* soft stage the browser window sits on */
+.stage{
+    position:relative;
+    border-radius:16px;
+    padding:clamp(22px, 4.5%, 36px) clamp(22px, 7%, 52px);
+    background:
+        radial-gradient(circle at 1px 1px, rgba(0,0,0,.07) 1px, transparent 1.4px) 0 0 / 18px 18px,
+        linear-gradient(160deg, #f4f4f6, #e9e9ee);
+    overflow:hidden;
+}
+
+.idx{
+    position:absolute;
+    top:12px; left:12px;
+    z-index:2;
+    height:24px;
+    padding:0 9px;
+    display:inline-flex;
+    align-items:center;
+    border-radius:980px;
+    background:rgba(255,255,255,.85);
+    -webkit-backdrop-filter:blur(16px);
+    backdrop-filter:blur(16px);
+    font-size:11.5px;
+    font-weight:600;
+    letter-spacing:.02em;
+    font-variant-numeric:tabular-nums;
+    box-shadow:inset 0 0 0 1px var(--hair);
+}
+
+/* browser window */
+.window{
+    position:relative;
+    border-radius:10px;
+    background:#fff;
+    overflow:hidden;
+    box-shadow:0 1px 2px rgba(0,0,0,.06), 0 14px 34px rgba(0,0,0,.12), 0 0 0 1px rgba(0,0,0,.06);
+    transition:transform .4s var(--ease), box-shadow .4s var(--ease);
+}
+.project-card:hover .window{
+    transform:translateY(-4px);
+    box-shadow:0 1px 2px rgba(0,0,0,.06), 0 22px 44px rgba(0,0,0,.16), 0 0 0 1px rgba(0,0,0,.06);
+}
+.bar{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    height:22px;
+    padding:0 9px;
+    background:#f5f5f7;
+    border-bottom:1px solid rgba(0,0,0,.06);
+}
+.bar i{
+    width:7px; height:7px;
+    border-radius:50%;
+    background:#d2d2d7;
+}
+.bar b{
+    flex:0 1 46%;
+    height:11px;
+    margin:0 auto;
+    border-radius:980px;
+    background:#e8e8ed;
+}
+.project-image{
+    display:block;
+    width:100%;
+    aspect-ratio:2.2 / 1;
+    object-fit:contain;
+    background:#fff;
+}
+
+/* pipeline visual inside the window */
+.flow{
+    aspect-ratio:2.2 / 1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    padding:12px;
+    background:
+        radial-gradient(circle at 1px 1px, #dcdce1 1px, transparent 1.4px) 0 0 / 14px 14px,
+        #fbfbfd;
+}
+.flow span{
+    padding:6px 11px;
+    border-radius:980px;
+    background:var(--panel);
+    font-size:12px;
+    font-weight:500;
+    white-space:nowrap;
+    box-shadow:0 2px 8px rgba(0,0,0,.06), inset 0 0 0 1px var(--hair);
+}
+.flow span.end{ background:var(--ink); color:#fff; box-shadow:none; }
+.flow i{ font-style:normal; color:var(--faint); font-size:12px; }
+@media (max-width:560px){
+    .flow{ gap:4px; padding:8px; }
+    .flow span{ padding:4px 8px; font-size:10.5px; }
+    .flow i{ font-size:10px; }
+    .stage{ padding:44px 16px 20px; }
+}
+
+.project-body{
+    display:flex;
+    flex-direction:column;
+    flex:1;
+    padding:20px 14px 8px;
+}
+.project-body h3{
+    font-size:21px;
+    line-height:1.2;
+    letter-spacing:-0.024em;
+}
+.project-body p{
+    margin-top:8px;
+    color:var(--muted);
+    font-size:14.5px;
+    line-height:1.6;
+    max-width:62ch;
+}
+.project-foot{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:14px;
+    margin-top:auto;
+    padding-top:18px;
+}
+.tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:5px;
+}
+.tag{
+    padding:3px 10px;
+    border-radius:980px;
+    background:var(--bg);
+    font-size:12px;
+    font-weight:500;
+    color:#424245;
+}
+.project-foot .btn{ flex:none; }
+
+/* ================= Skills ================= */
+
+.skills{
+    background:var(--panel);
+    border-radius:var(--r-tile);
+    padding:6px 30px;
+}
+.skill-category{
+    display:grid;
+    grid-template-columns:240px minmax(0,1fr);
+    gap:10px 24px;
+    align-items:center;
+    padding:20px 0;
+}
+.skill-category + .skill-category{ border-top:1px solid var(--hair); }
+.skill-category h3{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:16px;
+    letter-spacing:-0.018em;
+}
+.skill-category h3 small{
+    display:inline-grid;
+    place-items:center;
+    min-width:24px;
+    height:20px;
+    padding:0 6px;
+    border-radius:980px;
+    background:var(--bg);
+    font-family:var(--sans);
+    font-size:11.5px;
+    font-weight:600;
+    color:var(--muted);
+    font-variant-numeric:tabular-nums;
+}
+.skill-list{ display:flex; flex-wrap:wrap; gap:6px; }
+.skill-item{
+    padding:6px 13px;
+    border-radius:980px;
+    background:var(--bg);
+    font-size:13.5px;
+    transition:background-color .15s;
+}
+.skill-item:hover{ background:var(--field); }
+
+/* ================= Contact ================= */
+
+.contact{ padding:28px 0 20px; }
+
+.contact-tile{
+    position:relative;
+    overflow:hidden;
+    background:var(--ink);
+    color:#f5f5f7;
+    border-radius:var(--r-xl);
+    padding:clamp(18px, 2.5vw, 30px) clamp(20px, 2.8vw, 34px);
+    display:grid;
+    grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);
+    gap:24px 48px;
+    align-items:end;
+}
+.contact-tile::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:radial-gradient(circle at 1px 1px, rgba(255,255,255,.07) 1px, transparent 1.4px) 0 0 / 18px 18px;
+    -webkit-mask-image:linear-gradient(120deg, transparent 35%, #000);
+    mask-image:linear-gradient(120deg, transparent 35%, #000);
+    pointer-events:none;
+}
+.contact-tile > *{ position:relative; }
+.contact-tile .kicker{ color:#6e6e73; }
+.contact-tile h2{
+    font-size:clamp(34px, 4.6vw, 56px);
+    line-height:1;
+    letter-spacing:-0.04em;
+}
+.contact-tile h2 .hs{ color:#6e6e73; }
+.contact-tile p{ margin-top:14px; color:#a1a1a6; max-width:46ch; }
+
+.contact-links{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+.contact-links .btn{
+    justify-content:space-between;
+    height:48px;
+    padding:0 18px;
+    border-radius:16px;
+    background:rgba(255,255,255,.08);
+    color:#f5f5f7;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);
+}
+.contact-links .btn:hover{ background:rgba(255,255,255,.14); }
+.contact-links .btn .arr{ background:rgba(255,255,255,.1); margin-right:-6px; }
+.contact-links .btn.primary{ background:#f5f5f7; color:var(--ink); }
+.contact-links .btn.primary:hover{ background:#fff; }
+.contact-links .btn.primary .arr{ background:var(--field); }
+
+.foot{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-top:18px;
+    padding:0 6px;
+    color:var(--faint);
+    font-size:12.5px;
+    font-variant-numeric:tabular-nums;
+}
+.foot a{ color:var(--muted); text-decoration:none; }
+.foot a:hover{ color:var(--fg); }
+
+/* ================= Motion ================= */
+
+@keyframes materialize{
+    from{ opacity:0; transform:scale(.96) translateY(6px); filter:blur(6px); }
+    to  { opacity:1; transform:none; filter:none; }
+}
+@keyframes fade{ from{ opacity:0; } to{ opacity:1; } }
+
+@media (prefers-reduced-motion:no-preference){
+    .pop:not([hidden]){ animation:materialize .24s var(--ease); }
+    .js .reveal{ opacity:0; transform:translateY(14px); transition:opacity .6s var(--ease), transform .6s var(--ease); }
+    .js .reveal.in{ opacity:1; transform:none; }
+}
+@media (prefers-reduced-motion:reduce){
+    .pop:not([hidden]){ animation:fade .15s ease; }
+    .btn:active{ transform:none; }
+    .project-card:hover .window{ transform:none; }
+}
+
+/* ================= Accessibility prefs ================= */
+
+@media (prefers-reduced-transparency:reduce){
+    .head{ background:var(--bg); -webkit-backdrop-filter:none; backdrop-filter:none; }
+    .pop, .photo-tag, .idx{ background:#fff; -webkit-backdrop-filter:none; backdrop-filter:none; }
+}
+@media (prefers-contrast:more){
+    :root{ --faint:#6e6e73; --muted:#3a3a3c; --hair:rgba(0,0,0,.35); }
+    .tile, .hero-tile, .project-card, .skills, .btn, .tag, .skill-item, .focus li{
+        box-shadow:inset 0 0 0 1px #8e8e93;
+    }
+}
+
+/* ================= Responsive ================= */
+
+@media (max-width:1040px){
+    .b-bg, .b-goal{ grid-column:span 12; }
+    .b-do{ grid-template-columns:1fr; }
+}
+
+@media (max-width:860px){
+    .projects{ grid-template-columns:minmax(0,1fr); }
+    .hero-tile{ grid-template-columns:1fr; }
+    .hero-photo{ order:-1; min-height:0; aspect-ratio:4 / 3; margin:10px 10px 0; }
+    .contact-tile{ grid-template-columns:1fr; align-items:start; }
+}
+
+@media (max-width:760px){
+    .head .wrap{ grid-template-columns:1fr auto; }
+    .head nav{ display:none; }
+    .head .wrap{ height:56px; }
+    .menu-btn{ display:inline-flex; }
+
+    .sec-head{ flex-direction:column; align-items:flex-start; }
+    .sec-desc{ text-align:left; }
+    .section{ padding-top:22px; }
+}
+
+@media (max-width:560px){
+    .projects{ grid-template-columns:minmax(0,1fr); }
+    .project-foot{ flex-direction:column; align-items:flex-start; }
+    .skills{ padding:4px 22px; }
+    .skill-category{ grid-template-columns:1fr; }
+    .tile{ padding:22px; }
+    .contact-links{ grid-template-columns:1fr; }
+    .head-end .btn.resume{ display:none; }
+    .hero-photo{ aspect-ratio:1 / 1; }
+}
+
+
+
+/* ===== Case study page ===== */
+
+.cs-top{ padding:20px 0 0; }
+
+.back{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:13.5px;
+    font-weight:500;
+    color:var(--muted);
+    text-decoration:none;
+    padding:6px 12px 6px 8px;
+    border-radius:980px;
+    transition:background-color .15s, color .15s;
+}
+.back:hover{ background:var(--panel); color:var(--fg); }
+
+.cs-hero{
+    margin-top:14px;
+    background:var(--panel);
+    border-radius:var(--r-xl);
+    padding:clamp(12px, 2vw, 22px) clamp(24px, 4vw, 44px);
+}
+.cs-kicker{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+}
+.cs-title{
+    margin-top:8px;
+    font-size:clamp(34px, 5vw, 60px);
+    line-height:1.02;
+    letter-spacing:-0.04em;
+}
+.cs-title .hs{ color:var(--faint); }
+.cs-lede{
+    margin-top:14px;
+    color:var(--muted);
+    font-size:16.5px;
+    line-height:1.6;
+}
+
+.meta{
+    display:grid;
+    grid-template-columns:repeat(4, minmax(0,1fr));
+    margin-top:28px;
+    border-top:1px solid var(--hair);
+}
+.meta div{
+    padding:14px 18px 6px 0;
+}
+.meta div + div{ padding-left:18px; border-left:1px solid var(--hair); }
+.meta dt{
+    font-size:11.5px;
+    font-weight:600;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--faint);
+}
+.meta dd{
+    margin:6px 0 0;
+    font-size:14.5px;
+    line-height:1.45;
+}
+
+.note{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    margin-top:22px;
+    padding:12px 16px;
+    border-radius:14px;
+    background:var(--bg);
+    font-size:13.5px;
+    color:var(--muted);
+}
+.note svg{ flex:none; width:16px; height:16px; margin-top:2px; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+
+.cover{ margin-top:14px; }
+.cover .stage{ border-radius:var(--r-xl); padding:clamp(20px, 5%, 56px) clamp(20px, 8%, 110px); }
+.cover .window{ border-radius:12px; }
+.cover .bar{ height:28px; padding:0 12px; gap:6px; }
+.cover .bar i{ width:9px; height:9px; }
+.cover .bar b{ height:14px; }
+.project-image.full{ aspect-ratio:auto; object-fit:initial; }
+
+/* stats */
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4, minmax(0,1fr));
+    gap:var(--gap);
+}
+.stat{
+    background:var(--panel);
+    border-radius:var(--r-tile);
+    padding:22px 24px;
+}
+.stat .num{
+    font-family:var(--display);
+    font-size:clamp(30px, 3.4vw, 42px);
+    font-weight:600;
+    letter-spacing:-0.035em;
+    line-height:1;
+    font-variant-numeric:tabular-nums;
+}
+.stat .num small{ font-size:.5em; color:var(--faint); letter-spacing:-0.01em; margin-left:2px; }
+.stat p{ margin-top:8px; color:var(--muted); font-size:14px; line-height:1.45; }
+
+/* two-column prose tile */
+.prose{
+    display:grid;
+    grid-template-columns:200px minmax(0,1fr);
+    gap:12px 28px;
+    align-items:start;
+}
+.prose h3{ margin:0; font-size:clamp(22px, 2.2vw, 28px); letter-spacing:-0.03em; }
+.prose .body p + p{ margin-top:12px; }
+.prose .body p{ max-width:none; }
+
+/* steps */
+.steps{
+    display:grid;
+    grid-template-columns:repeat(4, minmax(0,1fr));
+    gap:var(--gap);
+    counter-reset:step;
+}
+.step{
+    position:relative;
+    background:var(--panel);
+    border-radius:var(--r-tile);
+    padding:22px 22px 24px;
+}
+.step .n{
+    display:inline-grid;
+    place-items:center;
+    width:30px; height:30px;
+    border-radius:50%;
+    background:var(--ink);
+    color:#fff;
+    font-size:13px;
+    font-weight:600;
+    font-variant-numeric:tabular-nums;
+}
+.step h3{ margin-top:16px; font-size:17px; letter-spacing:-0.02em; }
+.step p{ margin-top:6px; color:var(--muted); font-size:14px; line-height:1.55; }
+.step ul{ display:flex; flex-wrap:wrap; gap:5px; margin-top:14px; }
+.step li{ padding:3px 10px; border-radius:980px; background:var(--bg); font-size:12px; font-weight:500; color:#424245; }
+.step:not(:last-child)::after{
+    content:"";
+    position:absolute;
+    top:36px; right:-11px;
+    width:8px; height:8px;
+    border-top:1.5px solid var(--faint);
+    border-right:1.5px solid var(--faint);
+    transform:rotate(45deg);
+}
+
+/* star schema */
+.schema-tile{ padding:22px; }
+.schema-tile svg{ display:block; width:100%; height:auto; }
+.schema-list{ display:none; }
+.schema-list small{ display:block; font-size:10.5px; font-weight:600; letter-spacing:.08em; color:var(--faint); }
+.schema-list strong{ display:block; margin-top:2px; font-size:15px; letter-spacing:-0.015em; }
+.schema-list span{ display:block; margin-top:3px; font-size:12.5px; color:var(--muted); line-height:1.45; }
+.schema-list .fact{ background:var(--ink); color:#fff; border-radius:14px; padding:14px 16px; }
+.schema-list .fact span{ color:#a1a1a6; }
+.schema-list .dims{
+    position:relative;
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0,1fr));
+    gap:8px;
+    margin-top:18px;
+}
+.schema-list .dims::before{
+    content:"";
+    position:absolute;
+    left:50%; top:-18px;
+    width:1.5px; height:18px;
+    background:#d2d2d7;
+}
+.schema-list .dims div{ background:var(--bg); border-radius:12px; padding:12px 14px; box-shadow:inset 0 0 0 1px #e5e5ea; }
+@media (max-width:760px){
+    .schema-tile svg{ display:none; }
+    .schema-list{ display:block; }
+}
+@media (max-width:400px){
+    .schema-list .dims{ grid-template-columns:minmax(0,1fr); }
+}
+.schema-cap{ margin-top:12px; font-size:13.5px; color:var(--muted); text-align:center; }
+
+/* charts */
+.charts{
+    display:grid;
+    grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);
+    gap:var(--gap);
+}
+.chart-card{
+    background:var(--panel);
+    border-radius:var(--r-tile);
+    padding:22px 24px 18px;
+    display:flex;
+    flex-direction:column;
+}
+.chart-card h3{ font-size:16.5px; letter-spacing:-0.018em; }
+.chart-card .sub{ margin-top:3px; font-size:13px; color:var(--muted); }
+.legend{
+    display:grid;
+    grid-template-columns:repeat(2, max-content);
+    column-gap:24px;
+    row-gap:8px;
+    gap:14px;
+    margin-top:12px;
+    font-size:12.5px;
+    color:var(--muted);
+}
+.legend span{ display:inline-flex; align-items:center; gap:6px; }
+.legend i{ width:14px; height:2px; border-radius:2px; }
+.plot{ position:relative; margin-top:10px; }
+.plot svg{ display:block; width:100%; height:auto; overflow:visible; }
+.plot .gridline{ stroke:#ececf0; stroke-width:1; }
+.plot .axis-label{ font:500 11px var(--sans); fill:#86868b; font-variant-numeric:tabular-nums; }
+.plot .direct{ font:600 11.5px var(--sans); fill:var(--fg); }
+.plot .hit{ fill:transparent; cursor:crosshair; }
+.plot .bar-rect{ transition:opacity .15s; }
+.plot .bar-rect.dim{ opacity:.45; }
+.tip{
+    position:absolute;
+    z-index:5;
+    pointer-events:none;
+    min-width:140px;
+    padding:9px 12px;
+    border-radius:12px;
+    background:rgba(255,255,255,.92);
+    -webkit-backdrop-filter:saturate(180%) blur(20px);
+    backdrop-filter:saturate(180%) blur(20px);
+    box-shadow:0 10px 30px rgba(0,0,0,.14), inset 0 0 0 1px var(--hair);
+    font-size:12.5px;
+    line-height:1.5;
+    font-variant-numeric:tabular-nums;
+    opacity:0;
+    transition:opacity .12s;
+}
+.tip.on{ opacity:1; }
+.tip b{ display:block; font-size:12px; color:var(--muted); font-weight:600; margin-bottom:2px; }
+.tip .row{ display:flex; align-items:center; gap:7px; justify-content:space-between; }
+.tip .row span{ display:inline-flex; align-items:center; gap:6px; color:var(--muted); white-space:nowrap; }
+.tip .row{ gap:14px; }
+.tip .row i{ width:8px; height:8px; border-radius:50%; }
+.tip .row strong{ font-weight:600; color:var(--fg); }
+
+details.table{
+    margin-top:auto;
+    padding-top:10px;
+    font-size:13px;
+}
+details.table summary{
+    cursor:pointer;
+    color:var(--muted);
+    font-weight:500;
+    list-style:none;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:4px 10px;
+    border-radius:980px;
+    background:var(--bg);
+}
+details.table summary::-webkit-details-marker{ display:none; }
+details.table summary::after{ content:"▾"; font-size:10px; }
+details.table[open] summary::after{ content:"▴"; }
+details.table table{
+    width:100%;
+    margin-top:10px;
+    border-collapse:collapse;
+    font-variant-numeric:tabular-nums;
+}
+details.table th, details.table td{
+    padding:5px 8px;
+    text-align:right;
+    border-bottom:1px solid var(--hair);
+}
+details.table th:first-child, details.table td:first-child{ text-align:left; }
+details.table th{ font-weight:600; color:var(--muted); font-size:12px; }
+.table-scroll{ max-height:220px; overflow:auto; }
+
+.callout{
+    margin-top:auto;
+    padding:16px 18px;
+    border-radius:14px;
+    background:var(--bg);
+}
+.callout-num{
+    font-family:var(--display);
+    font-size:30px;
+    font-weight:600;
+    letter-spacing:-0.03em;
+    line-height:1;
+    font-variant-numeric:tabular-nums;
+}
+.callout-num small{ font-size:.5em; color:var(--faint); letter-spacing:-0.01em; }
+.callout p{ margin-top:6px; font-size:13.5px; color:var(--muted); line-height:1.5; }
+#locChart{ margin-bottom:16px; }
+@media (max-width:560px){
+    .legend{ grid-template-columns:minmax(0,1fr); }
+}
+
+/* gallery */
+.gallery{
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0,1fr));
+    gap:var(--gap);
+}
+.shot{
+    background:var(--panel);
+    border-radius:var(--r-tile);
+    padding:10px;
+}
+.shot .stage{ padding:clamp(16px, 5%, 30px); }
+.shot figcaption{ padding:14px 10px 8px; }
+.shot figcaption strong{ display:block; font-size:15.5px; letter-spacing:-0.015em; }
+.shot figcaption span{ display:block; margin-top:3px; font-size:13.5px; color:var(--muted); line-height:1.5; }
+figure{ margin:0; }
+
+/* findings */
+.findings{
+    display:grid;
+    grid-template-columns:repeat(3, minmax(0,1fr));
+    gap:var(--gap);
+}
+.finding{
+    background:var(--panel);
+    border-radius:var(--r-tile);
+    padding:24px;
+}
+.finding .big{
+    font-family:var(--display);
+    font-size:34px;
+    font-weight:600;
+    letter-spacing:-0.035em;
+    line-height:1;
+    font-variant-numeric:tabular-nums;
+}
+.finding h3{ margin-top:12px; font-size:16.5px; letter-spacing:-0.018em; }
+.finding p{ margin-top:6px; color:var(--muted); font-size:14px; line-height:1.55; }
+
+.impact{
+    background:var(--ink);
+    color:#f5f5f7;
+}
+.impact h3{ color:#f5f5f7; }
+.impact ul{ display:grid; gap:12px; }
+.impact li{
+    display:grid;
+    grid-template-columns:22px 1fr;
+    gap:10px;
+    color:#c7c7cc;
+    line-height:1.55;
+}
+.impact li::before{
+    content:"";
+    width:16px; height:16px;
+    margin-top:3px;
+    border-radius:50%;
+    background:#f5f5f7 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.5 8.2l2.2 2.2 4.8-4.8' fill='none' stroke='%231d1d1f' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat;
+}
+.impact li strong{ color:#fff; font-weight:600; }
+
+/* next project */
+.next{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    background:var(--panel);
+    border-radius:var(--r-tile);
+    padding:22px 26px;
+    text-decoration:none;
+    transition:box-shadow .25s var(--ease);
+}
+.next:hover{ box-shadow:0 18px 40px rgba(0,0,0,.08); }
+.next small{ display:block; font-size:12px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--faint); }
+.next strong{ display:block; margin-top:4px; font-family:var(--display); font-size:clamp(20px, 2.4vw, 26px); font-weight:600; letter-spacing:-0.025em; }
+.next .circle{
+    flex:none;
+    display:grid;
+    place-items:center;
+    width:44px; height:44px;
+    border-radius:50%;
+    background:var(--ink);
+    color:#fff;
+    font-size:16px;
+    transition:transform .25s var(--ease);
+}
+.next:hover .circle{ transform:translateX(3px); }
+
+.cs-foot{ padding:28px 0 24px; }
+
+@media (max-width:1040px){
+    .steps{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+    .step:nth-child(2)::after{ display:none; }
+    .charts{ grid-template-columns:minmax(0,1fr); }
+    .findings{ grid-template-columns:minmax(0,1fr); }
+}
+@media (max-width:760px){
+    .meta{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+    .meta div:nth-child(3){ padding-left:0; border-left:0; }
+    .stats{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+    .prose{ grid-template-columns:minmax(0,1fr); }
+    .gallery{ grid-template-columns:minmax(0,1fr); }
+}
+@media (max-width:560px){
+    .steps{ grid-template-columns:minmax(0,1fr); }
+    .step::after{ display:none; }
+    .meta{ grid-template-columns:minmax(0,1fr); }
+    .meta div + div{ padding-left:0; border-left:0; }
+    .stats{ grid-template-columns:minmax(0,1fr); }
+}
+
+/* placeholder + sources */
+.placeholder{
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+    min-height:260px; border-radius:16px; border:1.5px dashed #c7c7cc; background:var(--bg);
+    text-align:center; padding:24px;
+}
+.placeholder svg{ width:30px; height:30px; stroke:var(--faint); fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; margin-bottom:4px; }
+.placeholder strong{ font-size:16px; letter-spacing:-0.015em; }
+.placeholder span{ font-size:13.5px; color:var(--muted); }
+.sources{ display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; margin-top:16px; }
+.sources > span{ font-size:11.5px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--faint); }
+.sources ul{ display:flex; flex-wrap:wrap; gap:6px; }
+.sources li{ padding:4px 11px; border-radius:980px; background:var(--bg); font-size:13px; }
+
+.charts.two{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+.fine{ margin-top:8px; font-size:12.5px; color:var(--faint); line-height:1.5; }
+.fine.center{ text-align:center; margin-top:12px; }
+.plot .cat{ font:500 12px var(--sans); fill:var(--fg); }
+.plot .val{ font:600 12px var(--sans); fill:var(--fg); font-variant-numeric:tabular-nums; }
+
+.tti{ margin-top:var(--gap); }
+.tti h3{ font-size:16.5px; letter-spacing:-0.018em; margin:0; }
+.tti .sub{ margin-top:3px; font-size:13px; color:var(--muted); }
+.tti-grid{
+    display:grid; grid-template-columns:repeat(4, minmax(0,1fr)) minmax(0,1.1fr);
+    gap:8px; margin-top:16px;
+}
+.tti-grid > div{ background:var(--bg); border-radius:14px; padding:14px 16px; }
+.tti-grid small{ display:block; font-size:12px; color:var(--muted); }
+.tti-grid b{ display:block; margin-top:6px; font-family:var(--display); font-size:30px; font-weight:600; letter-spacing:-0.03em; font-variant-numeric:tabular-nums; }
+.tti-grid .diff{ background:var(--ink); color:#fff; }
+.tti-grid .diff small, .tti-grid .diff span{ color:#a1a1a6; font-size:12px; }
+
+.corridors{ display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:var(--gap); }
+.corr{ background:var(--panel); border-radius:var(--r-tile); padding:22px; }
+.corr i{ display:block; width:28px; height:4px; border-radius:4px; background:var(--c); margin-bottom:14px; }
+.corr h3{ font-size:15.5px; letter-spacing:-0.015em; line-height:1.3; }
+.corr .len{ margin-top:2px; font-size:12.5px; color:var(--faint); }
+.corr .peak{ margin-top:12px; font-size:13.5px; color:var(--muted); }
+.corr .peak b{ display:block; font-family:var(--display); font-size:30px; font-weight:600; letter-spacing:-0.03em; color:var(--fg); font-variant-numeric:tabular-nums; }
+.corr p:last-child{ margin-top:8px; font-size:13.5px; color:var(--muted); line-height:1.5; }
+.finding .big small{ font-size:.5em; color:var(--faint); }
+
+@media (max-width:1040px){
+    .corridors{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+    .tti-grid{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+    .tti-grid .diff{ grid-column:span 2; }
+    .findings{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+}
+@media (max-width:760px){
+    .charts.two{ grid-template-columns:minmax(0,1fr); }
+}
+@media (max-width:560px){
+    .corridors, .findings{ grid-template-columns:minmax(0,1fr); }
+}
+
+/* why it matters */
+.value{
+    background:var(--ink);
+    color:#f5f5f7;
+    border-radius:var(--r-xl);
+    padding:clamp(24px, 4vw, 44px);
+}
+.value-kicker{
+    display:block;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:#86868b;
+}
+.value-head h3{
+    margin-top:10px;
+    font-size:clamp(26px, 3.2vw, 40px);
+    line-height:1.08;
+    letter-spacing:-0.035em;
+    color:#f5f5f7;
+}
+.value-head h3 span{ color:#6e6e73; }
+.value-head p{
+    margin-top:14px;
+    font-size:16px;
+    line-height:1.6;
+    color:#a1a1a6;
+}
+.value-grid{
+    display:grid;
+    grid-template-columns:repeat(4, minmax(0,1fr));
+    gap:10px;
+    margin-top:26px;
+}
+.vcard{
+    border-radius:18px;
+    padding:20px;
+    background:rgba(255,255,255,.06);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);
+}
+.vnum{
+    font-size:12px;
+    font-weight:600;
+    color:#6e6e73;
+    font-variant-numeric:tabular-nums;
+}
+.vcard h4{
+    margin:10px 0 0;
+    font-family:var(--display);
+    font-size:17px;
+    font-weight:600;
+    letter-spacing:-0.02em;
+    color:#fff;
+}
+.vcard p{ margin-top:6px; font-size:14px; line-height:1.55; color:#a1a1a6; }
+.value-skills{
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px 14px;
+    margin-top:22px;
+    padding-top:20px;
+    border-top:1px solid rgba(255,255,255,.1);
+}
+.value-skills > span{ font-size:13px; font-weight:600; color:#f5f5f7; }
+.value-skills ul{ display:flex; flex-wrap:wrap; gap:6px; }
+.value-skills li{
+    padding:5px 12px;
+    border-radius:980px;
+    background:rgba(255,255,255,.1);
+    font-size:12.5px;
+    color:#f5f5f7;
+}
+@media (max-width:1040px){ .value-grid{ grid-template-columns:repeat(2, minmax(0,1fr)); } }
+@media (max-width:560px){ .value-grid{ grid-template-columns:minmax(0,1fr); } }
+
+/* data model */
+.model-legend{ display:flex; flex-wrap:wrap; gap:8px 20px; margin:-2px 0 12px; font-size:13px; color:var(--muted); }
+.model-legend span{ display:inline-flex; align-items:center; gap:7px; }
+.model-legend .sw{ width:12px; height:12px; border-radius:4px; }
+.model-legend .sw.one{ background:var(--bg); box-shadow:inset 0 0 0 1px #d2d2d7; }
+.model-legend .sw.many{ background:var(--ink); }
+.model-legend b{ font-weight:600; color:var(--fg); font-variant-numeric:tabular-nums; }
+.model{ display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:var(--gap); }
+.cluster{ background:var(--panel); border-radius:var(--r-tile); padding:20px 22px 24px; }
+.cluster-head{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; }
+.cluster-head h3{ font-size:16.5px; letter-spacing:-0.018em; }
+.cluster-head span{ font-size:12.5px; color:var(--faint); }
+.cluster-body{ position:relative; display:flex; flex-direction:column; gap:46px; margin-top:16px; }
+.cluster-body svg.links{ position:absolute; inset:0; width:100%; height:100%; overflow:visible; pointer-events:none; z-index:0; }
+.tier{ position:relative; z-index:1; display:flex; justify-content:center; gap:10px; }
+.node{ flex:1 1 0; max-width:240px; min-width:0; border-radius:14px; padding:11px 13px; }
+.node small{ display:block; font:500 11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color:var(--faint); }
+.node strong{ display:block; margin-top:2px; font-size:14px; letter-spacing:-0.012em; }
+.node span{ display:block; margin-top:4px; font:400 11.5px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color:var(--muted); overflow-wrap:anywhere; }
+.node.one{ background:var(--bg); box-shadow:inset 0 0 0 1px #e5e5ea; }
+.node.many{ background:var(--ink); color:#fff; }
+.node.many small{ color:#86868b; }
+.node.many span{ color:#a1a1a6; }
+.links path{ fill:none; stroke:#c7c7cc; stroke-width:1.5; }
+.links text{ font:600 11px var(--sans); fill:var(--muted); }
+.standalone{ display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px; margin-top:var(--gap); background:var(--panel); border-radius:var(--r-tile); padding:16px 22px; }
+.standalone > span{ font-size:11.5px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--faint); }
+.standalone ul{ display:flex; flex-wrap:wrap; gap:6px; }
+.standalone li{ padding:5px 12px; border-radius:980px; background:var(--bg); font-size:12.5px; color:var(--muted); }
+.standalone li b{ color:var(--fg); font-weight:600; margin-right:4px; }
+
+/* under the hood */
+.hood{ display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:var(--gap); }
+.code-card{ display:flex; flex-direction:column; background:var(--panel); border-radius:var(--r-tile); padding:22px 24px 24px; min-width:0; }
+.code-head h3{ font-size:16.5px; letter-spacing:-0.018em; }
+.code-head p{ margin-top:6px; font-size:14px; line-height:1.55; color:var(--muted); }
+.code{
+    margin:16px 0 0; padding:16px 18px; border-radius:14px;
+    background:var(--ink); color:#e5e5ea; overflow-x:auto;
+    font:400 12.5px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    tab-size:4;
+}
+.code.small{ font-size:12px; margin-top:auto; }
+.code .k{ color:#ff9ad5; }
+.code .f{ color:#8fd3ff; }
+.code .s{ color:#ffd479; }
+.code .m{ color:#fff; font-weight:600; }
+.code .c{ color:#86868b; }
+.steps-list{
+    list-style:none; counter-reset:st; margin:16px 0; padding:0;
+    display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:4px 16px;
+}
+.steps-list li{ counter-increment:st; display:flex; align-items:baseline; gap:8px; font-size:13px; padding:4px 0; border-bottom:1px solid var(--hair); }
+.steps-list li::before{ content:counter(st, decimal-leading-zero); font-size:11px; font-weight:600; color:var(--faint); font-variant-numeric:tabular-nums; }
+.steps-list em{ font-style:normal; color:var(--faint); margin-left:2px; }
+
+@media (max-width:1040px){
+    .hood{ grid-template-columns:minmax(0,1fr); }
+}
+@media (max-width:760px){
+    .model{ grid-template-columns:minmax(0,1fr); }
+}
+@media (max-width:560px){
+    .tier{ gap:6px; }
+    .node{ padding:9px 10px; }
+    .node strong{ font-size:13px; }
+    .node span{ font-size:10.5px; }
+    .steps-list{ grid-template-columns:minmax(0,1fr); }
+    .cluster{ padding:18px 16px 20px; }
+}
+
+/* before vs during */
+.compare{ display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:var(--gap); }
+.cmp{ background:var(--panel); border-radius:var(--r-tile); padding:20px 22px; }
+.cmp small{ display:block; font-size:12.5px; font-weight:600; color:var(--muted); margin-bottom:10px; }
+.cmp-row{ display:flex; align-items:baseline; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--hair); }
+.cmp-row span{ font-size:13px; color:var(--faint); }
+.cmp-row b{ font-family:var(--display); font-size:24px; font-weight:600; letter-spacing:-0.025em; font-variant-numeric:tabular-nums; }
+.cmp-row b em{ font-style:normal; font-size:13px; color:var(--faint); font-weight:500; }
+.cmp .delta{ display:inline-block; margin-top:12px; padding:4px 10px; border-radius:980px; background:var(--ink); color:#fff; font-size:12.5px; font-weight:600; font-variant-numeric:tabular-nums; }
+
+/* drive test routes */
+.routes{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:var(--gap); margin-top:var(--gap); }
+.route{ background:var(--panel); border-radius:var(--r-tile); padding:22px; display:flex; flex-direction:column; }
+.rnum{ align-self:flex-start; padding:3px 10px; border-radius:980px; background:var(--ink); color:#fff; font-size:12px; font-weight:600; }
+.route h3{ margin-top:12px; font-size:15.5px; letter-spacing:-0.015em; line-height:1.35; }
+.rstats{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:auto; padding-top:16px; }
+.rstats div{ background:var(--bg); border-radius:14px; padding:12px 14px; }
+.rstats b{ display:block; font-family:var(--display); font-size:26px; font-weight:600; letter-spacing:-0.03em; font-variant-numeric:tabular-nums; }
+.rstats small{ display:block; margin-top:2px; font-size:12px; color:var(--muted); line-height:1.35; }
+
+.cluster-note{ display:flex; flex-wrap:wrap; justify-content:center; gap:6px; margin-top:16px; }
+.cluster-note li{ padding:3px 10px; border-radius:980px; background:var(--bg); font-size:12px; color:var(--muted); }
+.gallery .shot figcaption span{ min-height:0; }
+
+@media (max-width:1040px){
+    .compare{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+    .routes{ grid-template-columns:minmax(0,1fr); }
+}
+@media (max-width:560px){
+    .compare{ grid-template-columns:minmax(0,1fr); }
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- Navigation -->
+
+<header class="head" id="head">
+
+<div class="wrap">
+
+<a class="brand" href="../index.html">
+    <span class="mono" aria-hidden="true">RL</span>
+    Ryu Li
+</a>
+
+<nav aria-label="Primary">
+<ul class="nav" id="nav">
+    <li><a href="../index.html#about">About</a></li>
+    <li><a href="../index.html#projects">Projects</a></li>
+    <li><a href="../index.html#skills">Skills</a></li>
+    <li><a href="../index.html#contact">Contact</a></li>
+</ul>
+</nav>
+
+<div class="head-end">
+    <a class="btn sm primary resume" href="../assets/documents/Ryu-Li-Resume.pdf" target="_blank" rel="noopener">Résumé</a>
+    <button
+        class="btn menu-btn"
+        id="menuBtn"
+        type="button"
+        aria-haspopup="true"
+        aria-expanded="false"
+        aria-controls="menuPop"
+        aria-label="Toggle navigation"
+    ><span></span></button>
+</div>
+
+</div>
+
+</header>
+
+<div class="pop" id="menuPop" role="menu" aria-label="Navigation" hidden>
+    <a role="menuitem" href="../index.html#about">About</a>
+    <a role="menuitem" href="../index.html#projects">Projects</a>
+    <a role="menuitem" href="../index.html#skills">Skills</a>
+    <a role="menuitem" href="../index.html#contact">Contact</a>
+</div>
+
+<main>
+
+<!-- Hero -->
+
+<section class="cs-top">
+<div class="wrap">
+
+<a class="back" href="../index.html#projects"><span aria-hidden="true">←</span> All projects</a>
+
+<div class="cs-hero reveal">
+
+<h1 class="cs-title">SW 10th St. Mobility Improvements. <span class="hs">A Smart Work Zone performance report.</span></h1>
+
+<p class="cs-lede">
+A seven-page Power BI report for the SW 10th St. Connector project in Broward County, where new connector
+lanes, rebuilt I-95 interchanges, and a reconstructed NW 48th St. bridge are under construction from August 2026
+through 2032. It tracks safety, travel time, turning movement counts, detour routes, and field drive tests,
+so the project team can compare conditions before and during construction.
+</p>
+
+<dl class="meta">
+    <div><dt>My role</dt><dd>Data analyst and field tester: drove test routes, ETL, data model, dashboard design</dd></div>
+    <div><dt>Location</dt><dd>Broward County, FDOT District 4, Florida</dd></div>
+    <div><dt>Data period</dt><dd>Crashes 2018 – Aug. 2026, travel times 2022 – Oct. 2026, drive tests fall 2026</dd></div>
+    <div><dt>Tools</dt><dd>Power BI, DAX, Power Query, RITIS, Signal Four Analytics, GPS</dd></div>
+</dl>
+
+</div>
+
+<!-- Cover -->
+
+<div class="cover reveal">
+<div class="stage">
+    <div class="window">
+        <div class="bar" aria-hidden="true"><i></i><i></i><i></i><b></b></div>
+        <img src="../assets/Projects/SW10/sw10-landing.png" class="project-image full" alt="SW 10th St. Smart Work Zone report landing page">
+    </div>
+</div>
+</div>
+
+</div>
+</section>
+
+<!-- At a glance -->
+
+<section class="section">
+<div class="wrap">
+
+<div class="sec-head reveal">
+<div>
+<h2 class="sec-title">At a glance. <span class="hs">The scope in numbers.</span></h2>
+</div>
+</div>
+
+<div class="stats reveal">
+    <div class="stat"><div class="num">7</div><p>Report pages covering safety, mobility, counts, detours, segments, and drive tests</p></div>
+    <div class="stat"><div class="num">26.6<small>K</small></div><p>Crashes analyzed from January 2018 to August 2026</p></div>
+    <div class="stat"><div class="num">161</div><p>GPS drive-test runs across three routes, about half driven by me</p></div>
+    <div class="stat"><div class="num">8</div><p>Detour routes monitored for travel time and reliability</p></div>
+</div>
+
+</div>
+</section>
+
+<!-- Challenge -->
+
+<section class="section">
+<div class="wrap">
+
+<div class="tile prose reveal">
+<h3>The challenge</h3>
+<div class="body">
+<p>
+The SW 10th St. Connector project builds new connector lanes for regional traffic, reconstructs local
+SW 10th St. at the I-95 interchanges and Hillsborough Blvd., and rebuilds the NW 48th St. bridge. The work
+covers about three miles of SW 10th St., from Florida's Turnpike to Natura Blvd., and runs from early
+August 2026 to 2032.
+</p>
+<p>
+A project this long needs a clear baseline. The team had to know how safe and reliable the network was
+before construction, watch for changes once work began, and check how drivers were affected on the
+NW 48th St. detour routes. That information came from probe travel times, crash
+records, turning movement counts, and field drive tests, each in its own format.
+</p>
+</div>
+</div>
+
+</div>
+</section>
+
+<!-- Approach -->
+
+<section class="section">
+<div class="wrap">
+
+<div class="sec-head reveal">
+<div>
+<h2 class="sec-title">My approach. <span class="hs">From the field to the report.</span></h2>
+</div>
+</div>
+
+<div class="steps reveal">
+    <div class="step">
+        <span class="n">1</span>
+        <h3>Collect</h3>
+        <p>Pulled RITIS travel times and Signal Four Analytics crash data, gathered turning movement counts, and drove the test routes with GPS logging during AM and PM peaks.</p>
+        <ul><li>RITIS</li><li>Signal Four</li><li>GPS</li></ul>
+    </div>
+    <div class="step">
+        <span class="n">2</span>
+        <h3>Transform</h3>
+        <p>Designed the drive-test process in Power Query: grouped raw GPS points into runs, then calculated travel time, speed, distance, route, and direction for each one.</p>
+        <ul><li>Power Query</li><li>M</li></ul>
+    </div>
+    <div class="step">
+        <span class="n">3</span>
+        <h3>Model</h3>
+        <p>Related the corridor lists, crash tables, count data, and drive-test runs, and added separate selector tables so two intersections can be compared side by side.</p>
+        <ul><li>Data model</li><li>DAX</li></ul>
+    </div>
+    <div class="step">
+        <span class="n">4</span>
+        <h3>Visualize</h3>
+        <p>Built seven pages with before-and-during construction KPIs, TTI maps, hourly and monthly trends, intersection diagrams, and drive-test run tables.</p>
+        <ul><li>Power BI</li><li>Azure Maps</li></ul>
+    </div>
+</div>
+
+</div>
+</section>
+
+<!-- Before vs during -->
+
+<section class="section">
+<div class="wrap">
+
+<div class="sec-head reveal">
+<div>
+<h2 class="sec-title">Before vs. during construction. <span class="hs">Travel time on the network.</span></h2>
+</div>
+</div>
+
+<div class="compare reveal">
+    <div class="cmp">
+        <small>Travel time index</small>
+        <div class="cmp-row"><span>Before</span><b>1.23</b></div>
+        <div class="cmp-row"><span>During</span><b>1.27</b></div>
+        <p class="delta">+3.3%</p>
+    </div>
+    <div class="cmp">
+        <small>Planning time index</small>
+        <div class="cmp-row"><span>Before</span><b>2.09</b></div>
+        <div class="cmp-row"><span>During</span><b>2.26</b></div>
+        <p class="delta">+8.1%</p>
+    </div>
+    <div class="cmp">
+        <small>95th percentile travel time</small>
+        <div class="cmp-row"><span>Before</span><b>10.85<em> min</em></b></div>
+        <div class="cmp-row"><span>During</span><b>11.76<em> min</em></b></div>
+        <p class="delta">+0.91 min</p>
+    </div>
+    <div class="cmp">
+        <small>Average travel time</small>
+        <div class="cmp-row"><span>Before</span><b>6.38<em> min</em></b></div>
+        <div class="cmp-row"><span>During</span><b>6.59<em> min</em></b></div>
+        <p class="delta">+0.21 min</p>
+    </div>
+</div>
+<p class="fine center reveal">Before construction is up to August 1, 2026, and during construction is after. Travel time data runs from January 2022 to October 2026.</p>
+
+</div>
+</section>
+
+<!-- Insights -->
+
+<section class="section">
+<div class="wrap">
+
+<div class="sec-head reveal">
+<div>
+<h2 class="sec-title">What the data shows. <span class="hs">Corridors and detours.</span></h2>
+</div>
+</div>
+
+<div class="charts two reveal">
+
+<div class="chart-card">
+    <h3>Travel time index by corridor</h3>
+    <p class="sub">Average TTI, January 2022 – October 2026</p>
+    <div class="plot" id="corrChart"></div>
+    <div class="callout">
+        <div class="callout-num">1.33 <small>TTI</small></div>
+        <p>SW 10th St. has the highest travel time index and the highest planning time index (1.91) of the ten corridors.</p>
+    </div>
+</div>
+
+<div class="chart-card">
+    <h3>Travel time by detour route</h3>
+    <p class="sub">Average minutes, January 2022 – October 2026</p>
+    <div class="plot" id="detourChart"></div>
+    <div class="callout">
+        <div class="callout-num">1.20 – 1.27 <small>TTI</small></div>
+        <p>All eight detours stay within a narrow TTI range, so no single route stands out as a bottleneck.</p>
+    </div>
+</div>
+
+</div>
+
+</div>
+</section>
+
+<!-- Drive tests -->
+
+<section class="section">
+<div class="wrap">
+
+<div class="sec-head reveal">
+<div>
+<h2 class="sec-title">Drive testing. <span class="hs">From the driver's seat.</span></h2>
+</div>
+</div>
+
+<div class="tile prose reveal">
+<h3>In the field</h3>
+<div class="body">
+<p>
+I drove about half of the test runs myself, logging GPS along three routes during the
+AM peak (6 to 9 AM) and PM peak (3 to 6 PM) on September 16–17 and November 3–5, 2026. I also designed the
+process that turns those raw GPS files into the dashboard: each file becomes a run with its start and end
+time, duration, average speed, total distance, route, and direction.
+</p>
+</div>
+</div>
+
+<div class="routes reveal">
+    <div class="route">
+        <span class="rnum">Route 1</span>
+        <h3>48th St. &amp; Military Trail to SW 10th St. to NE 3rd Ave.</h3>
+        <div class="rstats">
+            <div><b>11.6</b><small>min average travel time</small></div>
+            <div><b>18.6</b><small>mph average speed</small></div>
+        </div>
+    </div>
+    <div class="route">
+        <span class="rnum">Route 2</span>
+        <h3>48th St. &amp; Military Trail to Sample Rd. to NE 3rd Ave.</h3>
+        <div class="rstats">
+            <div><b>13.8</b><small>min average travel time</small></div>
+            <div><b>14.9</b><small>mph average speed</small></div>
+        </div>
+    </div>
+    <div class="route">
+        <span class="rnum">Route 3</span>
+        <h3>SW 10th St. &amp; SW 28th Ave. to SW 10th St. &amp; SW 3rd Ave.</h3>
+        <div class="rstats">
+            <div><b>6.9</b><small>min average travel time</small></div>
+            <div><b>20.7</b><small>mph average speed</small></div>
+        </div>
+    </div>
+</div>
+
+</div>
+</section>
+
+<!-- Dashboard pages -->
+
+<section class="section">
+<div class="wrap">
+
+<div class="sec-head reveal">
+<div>
+<h2 class="sec-title">The report. <span class="hs">Seven pages, one project.</span></h2>
+</div>
+</div>
+
+<div class="gallery reveal">
+    <figure class="shot">
+        <div class="stage"><div class="window"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><b></b></div>
+            <img src="../assets/Projects/SW10/sw10-safety.png" class="project-image full" alt="Safety page" loading="lazy">
+        </div></div>
+        <figcaption><strong>Safety</strong><span>Crash map, corridor and intersection rankings, and crash counts by type, hour, weekday, and month, split before and during construction.</span></figcaption>
+    </figure>
+    <figure class="shot">
+        <div class="stage"><div class="window"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><b></b></div>
+            <img src="../assets/Projects/SW10/sw10-mobility.png" class="project-image full" alt="Mobility page" loading="lazy">
+        </div></div>
+        <figcaption><strong>Mobility</strong><span>Corridor TTI map, travel time reliability by corridor and direction, and hourly and monthly TTI by year.</span></figcaption>
+    </figure>
+    <figure class="shot">
+        <div class="stage"><div class="window"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><b></b></div>
+            <img src="../assets/Projects/SW10/sw10-tmc.png" class="project-image full" alt="Turning movement counts page" loading="lazy">
+        </div></div>
+        <figcaption><strong>Turning movement counts</strong><span>Daily volumes by movement and a side-by-side comparison of any two intersections and dates, with percent difference.</span></figcaption>
+    </figure>
+    <figure class="shot">
+        <div class="stage"><div class="window"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><b></b></div>
+            <img src="../assets/Projects/SW10/sw10-detours.png" class="project-image full" alt="Detour routes page" loading="lazy">
+        </div></div>
+        <figcaption><strong>Detour routes</strong><span>Travel time, TTI, and PTI for eight detour routes, with hourly TTI per detour.</span></figcaption>
+    </figure>
+    <figure class="shot">
+        <div class="stage"><div class="window"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><b></b></div>
+            <img src="../assets/Projects/SW10/sw10-tmc-segments.png" class="project-image full" alt="TMC segments page" loading="lazy">
+        </div></div>
+        <figcaption><strong>TMC segments</strong><span>Northbound and southbound corridor performance by week, with average TTI, PTI, and peak time.</span></figcaption>
+    </figure>
+    <figure class="shot">
+        <div class="stage"><div class="window"><div class="bar" aria-hidden="true"><i></i><i></i><i></i><b></b></div>
+            <img src="../assets/Projects/SW10/sw10-drive-test.png" class="project-image full" alt="Drive test page" loading="lazy">
+        </div></div>
+        <figcaption><strong>Drive test</strong><span>Route details, a GPS map of moving and stopped points, travel time along each route, and a table of every run.</span></figcaption>
+    </figure>
+</div>
+
+</div>
+</section>
+
+<!-- Data model -->
+
+<section class="section">
+<div class="wrap">
+
+<div class="sec-head reveal">
+<div>
+<h2 class="sec-title">Data model. <span class="hs">Four related groups, one report.</span></h2>
+</div>
+</div>
+
+<div class="model-legend reveal">
+    <span><i class="sw one"></i>One side (lookup)</span>
+    <span><i class="sw many"></i>Many side (detail)</span>
+    <span><b>1</b> → <b>*</b> one-to-many relationship</span>
+</div>
+
+<div class="model reveal">
+
+<div class="cluster" data-links="s-cor>s-mas">
+    <div class="cluster-head"><h3>Travel time</h3><span>4 RITIS datasets</span></div>
+    <div class="cluster-body">
+        <div class="tier"><div class="node one" id="s-cor"><small>RITIS-…-corridor list</small><strong>Corridor list</strong><span>corridor_id · corridor_id_dir · corridor_description</span></div></div>
+        <div class="tier"><div class="node many" id="s-mas"><small>RITIS-…-master</small><strong>Travel time records</strong><span>corridor_id_dir · Day · Day abbr</span></div></div>
+    </div>
+    <ul class="cluster-note"><li>SW 10th St.</li><li>NW 48th St.</li><li>NW 48th St. detours</li><li>NW 48th St. segments</li></ul>
+</div>
+
+<div class="cluster" data-links="c-t1>c-t2,c-t3>c-t2,c-t4>c-t2">
+    <div class="cluster-head"><h3>Crashes</h3><span>Signal Four Analytics</span></div>
+    <div class="cluster-body">
+        <div class="tier">
+            <div class="node one" id="c-t1"><small>s4a-t1</small><strong>Crash records</strong><span>CRASH_DATE_AND_TIME · Crash Type · Corridor Name</span></div>
+            <div class="node one" id="c-t3"><small>s4a-t3</small><strong>Corridors</strong><span>c_id · c_name · c_length(ft)</span></div>
+            <div class="node one" id="c-t4"><small>s4a-t4</small><strong>Intersections</strong><span>i_id · i_name · latitude</span></div>
+        </div>
+        <div class="tier"><div class="node many" id="c-t2"><small>s4a-t2</small><strong>Crash location bridge</strong><span>report_id · c_id · i_id</span></div></div>
+    </div>
+    <ul class="cluster-note"><li>SW 10th St.</li><li>NW 48th St.</li></ul>
+</div>
+
+<div class="cluster" data-links="t-int>t-mas">
+    <div class="cluster-head"><h3>Turning movement counts</h3><span>10 intersections</span></div>
+    <div class="cluster-body">
+        <div class="tier"><div class="node one" id="t-int"><small>TMC-Intersections</small><strong>Intersections</strong><span>Intersection · Latitude · Longitude</span></div></div>
+        <div class="tier"><div class="node many" id="t-mas"><small>TMC-master</small><strong>Count records</strong><span>Date · Date (bins) · Intersection</span></div></div>
+    </div>
+</div>
+
+<div class="cluster" data-links="d-ov>d-raw">
+    <div class="cluster-head"><h3>Drive tests</h3><span>161 runs</span></div>
+    <div class="cluster-body">
+        <div class="tier"><div class="node one" id="d-ov"><small>DriveTestOverview</small><strong>Run summary</strong><span>Date · Direction · Duration · Average Speed (mph)</span></div></div>
+        <div class="tier"><div class="node many" id="d-raw"><small>DriveTestRaw</small><strong>GPS points</strong><span>latitude · longitude · Cumulative Distance (mi)</span></div></div>
+    </div>
+</div>
+
+</div>
+
+<div class="standalone reveal">
+    <span>Helper tables</span>
+    <ul>
+        <li><b>TMC CompareDateA / B</b> date pickers for each side of the comparison</li>
+        <li><b>TMC CompareIntersectionA / B</b> intersection pickers</li>
+        <li><b>TMC MovementLookup</b> the 16 turning movements</li>
+        <li><b>Front Page Map</b> landing page map</li>
+        <li><b>Last Saved</b> save timestamp</li>
+    </ul>
+</div>
+
+</div>
+</section>
+
+<!-- Under the hood -->
+
+<section class="section">
+<div class="wrap">
+
+<div class="sec-head reveal">
+<div>
+<h2 class="sec-title">Under the hood. <span class="hs">Power Query and DAX.</span></h2>
+</div>
+</div>
+
+<div class="hood reveal">
+
+<div class="code-card">
+    <div class="code-head">
+        <h3>Turning raw GPS into drive-test runs</h3>
+        <p>Each GPS file is grouped into a single run, sorted by time, and summarized. Direction is then assigned from the change in longitude between the start and end of the run, ignoring tiny GPS movements. Excerpt simplified for readability.</p>
+    </div>
+<pre class="code"><code><span class="c">// Group every GPS point by run, then summarize it</span>
+Grouped = <span class="f">Table.Group</span>(WithRunKey, {<span class="s">"Run Key"</span>},
+  {{<span class="s">"Run Summary"</span>, (t <span class="k">as</span> table) <span class="k">as</span> record =&gt;
+    <span class="k">let</span>
+      Sorted = <span class="f">Table.Sort</span>(t, {{<span class="s">"timestamp"</span>,
+                 Order.Ascending}}),
+      StartTime = Sorted{0}[timestamp],
+      EndTime = Sorted{<span class="f">Table.RowCount</span>(Sorted) - 1}
+                  [timestamp],
+      AvgMPH = <span class="f">List.Average</span>(
+                 <span class="f">List.RemoveNulls</span>(t[speed_mph])),
+      Miles = <span class="f">List.Max</span>(<span class="f">List.RemoveNulls</span>(
+                t[#<span class="s">"Cumulative Distance (mi)"</span>]))
+    <span class="k">in</span>
+      [Duration = EndTime - StartTime,
+       #<span class="s">"Average Speed (mph)"</span> = AvgMPH,
+       #<span class="s">"Total Distance (mi)"</span> = Miles]
+  }}),
+
+<span class="c">// Direction from the change in longitude (Route 3)</span>
+<span class="k">if</span> <span class="f">Number.Abs</span>(LongitudeChange) &lt; 0.001 <span class="k">then</span> null
+<span class="k">else if</span> LongitudeChange &gt; 0 <span class="k">then</span> <span class="s">"EB"</span> <span class="k">else</span> <span class="s">"WB"</span></code></pre>
+</div>
+
+<div class="code-card">
+    <div class="code-head">
+        <h3>Side-by-side intersection comparison</h3>
+        <p>Turning movement counts load from a CSV and are tagged by peak period: AM (6 to 9 AM), midday (11 AM to 2 PM), and PM (3 to 6 PM). Separate selector tables let the user pick two intersections and dates independently and compare them on one page.</p>
+    </div>
+    <ol class="steps-list">
+        <li>Source <em>SharePoint</em></li>
+        <li>Imported CSV</li>
+        <li>Promoted headers</li>
+        <li>Typed date, time, and volume</li>
+        <li>Inserted start of hour</li>
+        <li>Added Peak Period</li>
+        <li>Added Peak Period Index</li>
+        <li>Added Volume For Visual</li>
+    </ol>
+<pre class="code small"><code><span class="c">// Independent selector tables for each side</span>
+<span class="m">TMC CompareIntersectionA</span> =
+    <span class="f">SELECTCOLUMNS</span> ( <span class="s">'TMC-Intersections'</span>,
+        <span class="s">"Int Name"</span>, <span class="s">'TMC-Intersections'</span>[Name],
+        <span class="s">"Intersection"</span>, <span class="s">'TMC-Intersections'</span>[Intersection] )
+
+<span class="m">TMC CompareDateA</span> =
+    <span class="f">DISTINCT</span> (
+        <span class="f">SELECTCOLUMNS</span> ( <span class="s">'TMC-master'</span>,
+            <span class="s">"Date"</span>, <span class="s">'TMC-master'</span>[Date] ) )</code></pre>
+</div>
+
+</div>
+
+</div>
+</section>
+
+<!-- Findings -->
+
+<section class="section">
+<div class="wrap">
+
+<div class="sec-head reveal">
+<div>
+<h2 class="sec-title">Key findings. <span class="hs">Straight from the report.</span></h2>
+</div>
+</div>
+
+<div class="findings reveal">
+    <div class="finding">
+        <div class="big">+8.1%</div>
+        <h3>Reliability slipped more than speed</h3>
+        <p>After construction began, PTI rose from 2.09 to 2.26 while TTI rose only from 1.23 to 1.27, so trips became less predictable.</p>
+    </div>
+    <div class="finding">
+        <div class="big">1.33</div>
+        <h3>SW 10th St. is the slowest corridor</h3>
+        <p>It has the highest TTI and PTI (1.91) of the ten corridors in the study area.</p>
+    </div>
+    <div class="finding">
+        <div class="big">26,361</div>
+        <h3>Crashes before construction</h3>
+        <p>From January 2018 to August 2026, including 5,212 injury, 322 serious injury, and 93 fatal crashes.</p>
+    </div>
+    <div class="finding">
+        <div class="big">I-95</div>
+        <h3>Top crash location</h3>
+        <p>SW 10th St. &amp; the I-95 southbound on-ramp has the most crashes, and I-95 northbound is the top corridor.</p>
+    </div>
+    <div class="finding">
+        <div class="big">13.8<small> min</small></div>
+        <h3>Route 2 is the slowest drive</h3>
+        <p>The Sample Rd. route averaged 13.8 minutes at 14.9 mph, compared with 11.6 minutes on Route 1.</p>
+    </div>
+    <div class="finding">
+        <div class="big">8 AM · 5 PM</div>
+        <h3>Directional peaks on NW 48th St.</h3>
+        <p>In October 2026, northbound traffic peaked at 8:00 AM and southbound at 5:00 PM, both averaging a TTI of 1.20.</p>
+    </div>
+</div>
+
+</div>
+</section>
+
+<!-- Why it matters -->
+
+<section class="section">
+<div class="wrap">
+
+<div class="value reveal">
+
+<div class="value-head">
+    <span class="value-kicker">Why it matters</span>
+    <h3>A long construction project needs a trustworthy baseline. <span>I built it, and drove part of it.</span></h3>
+    <p>
+        I built this seven-page report end to end in roughly 60 hours, from collecting the data and driving test
+        routes to modeling it and designing every page. It gives the project team one place to see how safety and
+        travel times change from the day construction starts, using probe data, crash records, intersection counts,
+        and travel times measured from the driver's seat.
+    </p>
+</div>
+
+<div class="value-grid">
+    <div class="vcard">
+        <span class="vnum">01</span>
+        <h4>Before vs. during, built in</h4>
+        <p>Every safety and mobility KPI is split at the construction start date, so changes show up the moment they happen.</p>
+    </div>
+    <div class="vcard">
+        <span class="vnum">02</span>
+        <h4>Field-verified travel times</h4>
+        <p>161 GPS drive-test runs back up the probe data with measured travel times and speeds on three key routes.</p>
+    </div>
+    <div class="vcard">
+        <span class="vnum">03</span>
+        <h4>Detours under watch</h4>
+        <p>Eight NW 48th St. detour routes are tracked for travel time, TTI, and PTI by hour, month, and year.</p>
+    </div>
+    <div class="vcard">
+        <span class="vnum">04</span>
+        <h4>Intersection-level detail</h4>
+        <p>Any two intersections and dates can be compared movement by movement, with the percent difference calculated automatically.</p>
+    </div>
+</div>
+
+<div class="value-skills">
+    <span>What this project shows I can do</span>
+    <ul>
+        <li>End-to-end ownership</li>
+        <li>Field data collection</li>
+        <li>GPS data processing</li>
+        <li>Power Query (M)</li>
+        <li>Data modeling</li>
+        <li>DAX</li>
+        <li>Work zone performance metrics</li>
+        <li>Stakeholder-ready report design</li>
+    </ul>
+</div>
+
+</div>
+
+</div>
+</section>
+
+<!-- Next -->
+
+<section class="section">
+<div class="wrap">
+<a class="next reveal" href="hillsborough.html">
+    <span>
+        <small>Next project</small>
+        <strong>Hillsborough Traffic Operations Dashboard</strong>
+    </span>
+    <span class="circle" aria-hidden="true">→</span>
+</a>
+</div>
+</section>
+
+</main>
+
+<footer class="cs-foot">
+<div class="wrap">
+<div class="foot">
+    <span>© 2026 Ryu Li. Built with HTML, CSS, and GitHub Pages.</span>
+    <a href="../index.html#contact">Get in touch →</a>
+</div>
+</div>
+</footer>
+
+<script>
+(() => {
+    document.documentElement.classList.add("js");
+
+    /* ---------- header + mobile menu (same as home page) ---------- */
+    const head = document.getElementById("head");
+    const btn = document.getElementById("menuBtn");
+    const pop = document.getElementById("menuPop");
+    const onScroll = () => head.classList.toggle("scrolled", window.scrollY > 4);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    const place = () => {
+        const r = btn.getBoundingClientRect();
+        pop.style.top = (r.bottom + 8) + "px";
+        pop.style.right = Math.max(12, window.innerWidth - r.right) + "px";
+    };
+    const open = () => { place(); pop.hidden = false; btn.setAttribute("aria-expanded", "true"); pop.querySelector("a").focus(); };
+    const close = (refocus) => {
+        if (pop.hidden) return;
+        pop.hidden = true; btn.setAttribute("aria-expanded", "false");
+        if (refocus) btn.focus();
+    };
+    btn.addEventListener("click", () => pop.hidden ? open() : close(false));
+    pop.addEventListener("click", e => { if (e.target.closest("a")) close(false); });
+    document.addEventListener("pointerdown", e => {
+        if (!pop.hidden && !pop.contains(e.target) && !btn.contains(e.target)) close(false);
+    });
+    document.addEventListener("keydown", e => {
+        if (pop.hidden) return;
+        const items = [...pop.querySelectorAll("a")];
+        const i = items.indexOf(document.activeElement);
+        if (e.key === "Escape") { e.preventDefault(); close(true); }
+        else if (e.key === "ArrowDown") { e.preventDefault(); items[(i + 1) % items.length].focus(); }
+        else if (e.key === "ArrowUp") { e.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+        else if (e.key === "Tab") { close(false); }
+    });
+    window.addEventListener("resize", () => { if (!pop.hidden) place(); if (window.innerWidth > 760) close(false); });
+
+    /* ---------- reveal on scroll ---------- */
+    if ("IntersectionObserver" in window) {
+        const ro = new IntersectionObserver(entries => {
+            entries.forEach(en => { if (en.isIntersecting){ en.target.classList.add("in"); ro.unobserve(en.target); } });
+        }, { rootMargin: "0px 0px -8% 0px" });
+        document.querySelectorAll(".reveal").forEach(el => ro.observe(el));
+    } else {
+        document.querySelectorAll(".reveal").forEach(el => el.classList.add("in"));
+    }
+
+    /* ---------- charts (illustrative data) ---------- */
+    const NS = "http://www.w3.org/2000/svg";
+    const el = (tag, attrs, parent) => {
+        const n = document.createElementNS(NS, tag);
+        for (const k in attrs) n.setAttribute(k, attrs[k]);
+        if (parent) parent.appendChild(n);
+        return n;
+    };
+
+    /* Horizontal bar chart (single series), values from the dashboard */
+    function hbar(host, rows, colLabel, fmt){
+        fmt = fmt || (v => v);
+        host.querySelectorAll("svg,.tip").forEach(n => n.remove());
+        const W = Math.max(280, host.clientWidth || 480);
+        const narrow = W < 440;
+        const labelW = narrow ? 0 : 140, valW = 52;
+        const rowH = narrow ? 46 : 34, barH = narrow ? 14 : 18, m = { t: 4, b: 4 };
+        const H = m.t + m.b + rows.length * rowH + (narrow ? 8 : 0);
+        const iw = W - labelW - valW - 8;
+        const max = Math.max(...rows.map(r => r[1]));
+        const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img",
+            "aria-label": rows.map(r => `${r[0]}: ${r[1]}`).join(", ") }, host);
+        const tip = document.createElement("div"); tip.className = "tip"; host.appendChild(tip);
+        const bars = [];
+        rows.forEach((r, i) => {
+            const cy = m.t + i * rowH + rowH / 2 + (narrow ? 8 : 0), w = Math.max(2, (r[1] / max) * iw), x0 = labelW, rr = 4;
+            if (narrow) el("text", { x: 0, y: cy - barH / 2 - 6, class: "cat" }, svg).textContent = r[0];
+            else el("text", { x: labelW - 10, y: cy + 4, "text-anchor": "end", class: "cat" }, svg).textContent = r[0];
+            const d = `M${x0} ${cy - barH/2} H${x0 + w - rr} Q${x0 + w} ${cy - barH/2} ${x0 + w} ${cy - barH/2 + rr} V${cy + barH/2 - rr} Q${x0 + w} ${cy + barH/2} ${x0 + w - rr} ${cy + barH/2} H${x0} Z`;
+            bars.push(el("path", { d, fill: "#2a78d6", class: "bar-rect" }, svg));
+            el("text", { x: x0 + w + 8, y: cy + 4, class: "val" }, svg).textContent = fmt(r[1]);
+            const hit = el("rect", { x: 0, y: m.t + i * rowH, width: W, height: rowH, class: "hit" }, svg);
+            hit.addEventListener("pointerenter", () => {
+                bars.forEach((b, k) => b.classList.toggle("dim", k !== i));
+                tip.innerHTML = `<b>${r[0]}</b><div class="row"><span><i style="background:#2a78d6"></i>${colLabel}</span><strong>${fmt(r[1])}</strong></div>`;
+                let left = x0 + w + 44; if (left + 170 > W) left = Math.max(0, x0 + w - 180);
+                tip.style.left = left + "px"; tip.style.top = Math.max(0, cy - 30) + "px";
+                tip.classList.add("on");
+            });
+            hit.addEventListener("pointerleave", () => { bars.forEach(b => b.classList.remove("dim")); tip.classList.remove("on"); });
+        });
+    }
+
+    const corridors = [["SW 10th St.",1.33],["Hillsborough Blvd.",1.29],["Sample Rd.",1.29],["Powerline Rd.",1.26],["U.S. 1",1.25],["3rd Ave.",1.17],["48th St.",1.17],["Dixie Hwy.",1.17],["Military Trl.",1.17],["Natura Blvd.",1.09]];
+    const detours = [["Detour 1",6.6],["Detour 2",6.8],["Detour 3",7.2],["Detour 4",7.0],["Detour 5",7.5],["Detour 6",7.6],["Detour 7",7.4],["Detour 8",7.5]];
+
+    /* ---------- data model connectors ---------- */
+    function drawLinks(){
+        document.querySelectorAll(".cluster").forEach(cl => {
+            const body = cl.querySelector(".cluster-body");
+            body.querySelectorAll("svg.links").forEach(n => n.remove());
+            const br = body.getBoundingClientRect();
+            const svg = el("svg", { class: "links", "aria-hidden": "true" });
+            body.insertBefore(svg, body.firstChild);
+            const pairs = (cl.dataset.links || "").split(",").filter(Boolean).map(p => p.split(">"));
+            pairs.forEach(([a, b]) => {
+                const A = document.getElementById(a).getBoundingClientRect();
+                const B = document.getElementById(b).getBoundingClientRect();
+                const x1 = A.left + A.width / 2 - br.left, y1 = A.bottom - br.top;
+                const x2 = B.left + B.width / 2 - br.left, y2 = B.top - br.top;
+                const my = (y1 + y2) / 2, r = 8;
+                let d;
+                if (Math.abs(x1 - x2) < 1) d = `M${x1} ${y1} V${y2}`;
+                else {
+                    const dir = x2 > x1 ? 1 : -1;
+                    d = `M${x1} ${y1} V${my - r} Q${x1} ${my} ${x1 + dir * r} ${my} H${x2 - dir * r} Q${x2} ${my} ${x2} ${my + r} V${y2}`;
+                }
+                el("path", { d }, svg);
+                el("text", { x: x1 + 6, y: y1 + 13 }, svg).textContent = "1";
+                el("text", { x: x2 + 6, y: y2 - 5 }, svg).textContent = "*";
+            });
+        });
+    }
+    const draw = () => {
+        drawLinks();
+        hbar(document.getElementById("corrChart"), corridors, "TTI", v => v.toFixed(2));
+        hbar(document.getElementById("detourChart"), detours, "Travel time", v => v.toFixed(1) + " min");
+    };
+    draw();
+    window.addEventListener("load", drawLinks);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(drawLinks);
+    let lastW = window.innerWidth, t;
+    window.addEventListener("resize", () => {
+        if (window.innerWidth === lastW) return;
+        lastW = window.innerWidth;
+        clearTimeout(t); t = setTimeout(draw, 120);
+    });
+})();
+</script>
+
+</body>
+
+</html>
