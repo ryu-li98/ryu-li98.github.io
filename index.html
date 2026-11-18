@@ -268,19 +268,13 @@ h1,h2,h3{ margin:0; font-family:var(--display); font-weight:600; text-wrap:balan
     gap:8px;
     align-self:flex-start;
     height:28px;
-    padding:0 12px 0 10px;
+    padding:0 12px;
     border-radius:980px;
     background:var(--bg);
     font-size:12.5px;
     font-weight:500;
     color:var(--muted);
     letter-spacing:.005em;
-}
-.chip i{
-    width:7px; height:7px;
-    border-radius:50%;
-    background:#30d158;
-    box-shadow:0 0 0 3px rgba(48,209,88,.18);
 }
 
 .hero-title{
@@ -512,14 +506,17 @@ h1,h2,h3{ margin:0; font-family:var(--display); font-weight:600; text-wrap:balan
 }
 
 .project-card{
+    position:relative;
     display:flex;
     flex-direction:column;
     background:var(--panel);
     border-radius:var(--r-tile);
     padding:12px;
-    transition:box-shadow .3s var(--ease);
+    cursor:pointer;
+    transition:box-shadow .3s var(--ease), transform .3s var(--ease);
 }
-.project-card:hover{ box-shadow:0 20px 50px rgba(0,0,0,.07); }
+.project-card:hover{ box-shadow:0 20px 50px rgba(0,0,0,.09); }
+.project-card:focus-within{ box-shadow:0 0 0 2px var(--accent), 0 20px 50px rgba(0,0,0,.09); }
 
 /* soft stage the browser window sits on */
 .stage{
@@ -662,7 +659,25 @@ h1,h2,h3{ margin:0; font-family:var(--display); font-weight:600; text-wrap:balan
     font-weight:500;
     color:#424245;
 }
-.project-foot .btn{ flex:none; }
+/* Case study button: solid black, and its link covers the whole card */
+.project-foot .btn{
+    flex:none;
+    background:var(--accent);
+    color:var(--accent-ink);
+    box-shadow:none;
+}
+.project-foot .btn .arr{ background:rgba(255,255,255,.16); }
+.project-card:hover .project-foot .btn{ background:#000; }
+.project-card:hover .project-foot .btn .arr{ transform:translateX(2px); }
+.project-foot .btn:active{ transform:none; }
+.project-foot .btn:focus-visible{ outline:none; }
+.project-foot .btn::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:1;
+    border-radius:var(--r-tile);
+}
 
 /* ================= Skills ================= */
 
@@ -909,7 +924,7 @@ h1,h2,h3{ margin:0; font-family:var(--display); font-weight:600; text-wrap:balan
 
 <div class="hero-text">
 
-<span class="chip"><i aria-hidden="true"></i>Transportation + Data Engineering</span>
+<span class="chip">Transportation + Data Engineering</span>
 
 <h1 class="hero-title">Ryu Li</h1>
 
